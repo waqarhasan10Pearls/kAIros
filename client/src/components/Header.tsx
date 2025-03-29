@@ -7,10 +7,13 @@ const Header = () => {
     <header className="bg-white shadow">
       <div className="container mx-auto px-4 py-6">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-primary flex items-center">
-            <i className="ri-team-line mr-2"></i>
-            ScrumMaster Assistant
-          </h1>
+          <div className="flex flex-col">
+            <h1 className="text-2xl font-bold text-primary flex items-center">
+              <i className="ri-timer-flash-line mr-2"></i>
+              kAIros
+            </h1>
+            <p className="text-sm text-gray-500 hidden sm:block">AI-powered team coaching—at the moment it matters.</p>
+          </div>
           <div className="flex items-center space-x-4">
             <button
               className="text-gray-600 hover:text-primary transition-colors"
