@@ -93,7 +93,7 @@ ${scrumTeam.characteristics.map(char => `- ${char}`).join('\n')}
 Reply with ONLY the question text.`
             }
           ],
-          max_tokens: 50
+          max_tokens: 150
         })
       });
 
@@ -222,7 +222,7 @@ The Scrum Values you embody:
 ${scrumValues.values.map(value => `- ${value}`).join('\n')}
 
 Additional requirements:
-- Keep responses concise (max 3-4 sentences) and focused on the event at hand
+- Keep responses thoughtful but reasonably concise (up to 6-7 sentences) and focused on the event at hand
 - Be positive and solution-oriented
 - Focus on empiricism: transparency, inspection, and adaptation
 - Encourage self-management and cross-functionality
@@ -274,7 +274,7 @@ Additional requirements:
             ...messageHistory,
             { role: "user", content }
           ],
-          max_tokens: 250
+          max_tokens: 800
         })
       });
 
