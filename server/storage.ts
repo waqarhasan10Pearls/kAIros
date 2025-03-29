@@ -98,32 +98,48 @@ export class MemStorage implements IStorage {
   }
 
   async getSimulationInfo(eventType: string): Promise<SimulationInfo> {
-    const info = this.simulationInfos.get(eventType);
-    if (!info) {
-      throw new Error(`No simulation info found for event type: ${eventType}`);
+    try {
+      const info = this.simulationInfos.get(eventType);
+      if (!info) {
+        console.error(`No simulation info found for event type: ${eventType}`);
+        throw new Error(`No simulation info found for event type: ${eventType}`);
+      }
+      return info;
+    } catch (error) {
+      console.error("Error getting simulation info:", error);
+      throw error;
     }
-    return info;
   }
 
   async getMessages(eventType: string): Promise<Message[]> {
-    return this.messages.get(eventType) || [];
+    try {
+      return this.messages.get(eventType) || [];
+    } catch (error) {
+      console.error("Error getting messages:", error);
+      return [];
+    }
   }
 
   async addMessage(insertMessage: InsertMessage): Promise<Message> {
-    const id = this.messageCurrentId++;
-    const timestamp = new Date();
-    
-    const message: Message = { 
-      ...insertMessage, 
-      id,
-      timestamp
-    };
-    
-    const eventMessages = this.messages.get(insertMessage.eventType) || [];
-    eventMessages.push(message);
-    this.messages.set(insertMessage.eventType, eventMessages);
-    
-    return message;
+    try {
+      const id = this.messageCurrentId++;
+      const timestamp = new Date();
+      
+      const message: Message = { 
+        ...insertMessage, 
+        id,
+        timestamp
+      };
+      
+      const eventMessages = this.messages.get(insertMessage.eventType) || [];
+      eventMessages.push(message);
+      this.messages.set(insertMessage.eventType, eventMessages);
+      
+      return message;
+    } catch (error) {
+      console.error("Error adding message:", error);
+      throw error;
+    }
   }
 }
 

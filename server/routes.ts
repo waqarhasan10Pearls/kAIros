@@ -7,6 +7,7 @@ import { TeamMember, SprintDetails } from "../client/src/lib/types";
 import { scrumEvents, scrumTeam, scrumValues } from "./scrum-knowledge";
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || "";
+console.log("OpenRouter API Key available:", !!OPENROUTER_API_KEY);
 
 // Validate icebreaker request body
 const icebreakerSchema = z.object({
@@ -26,6 +27,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/icebreaker", async (req: Request, res: Response) => {
     try {
       const { vibe } = icebreakerSchema.parse(req.body);
+      
+      console.log(`Generating icebreaker with vibe: ${vibe}`);
+      
+      // If there's no API key, return a fallback response
+      if (!OPENROUTER_API_KEY) {
+        console.log("No OpenRouter API key available, returning fallback response");
+        return res.json({
+          question: "What's one way your team demonstrated a Scrum value in the last Sprint?"
+        });
+      }
       
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
@@ -138,6 +149,8 @@ Reply with ONLY the question text.`
     try {
       const { eventType, content } = messageSchema.parse(req.body);
       
+      console.log(`Sending message in ${eventType} event: ${content.substring(0, 30)}...`);
+      
       // Add user message
       const userMessage = await storage.addMessage({
         type: "user",
@@ -195,6 +208,38 @@ Additional requirements:
 - Focus on empiricism: transparency, inspection, and adaptation
 - Encourage self-management and cross-functionality
 `;
+
+      // If there's no API key, return a fallback response
+      if (!OPENROUTER_API_KEY) {
+        console.log("No OpenRouter API key available, returning fallback response");
+        // Create a generic Scrum Master response based on the event type
+        let aiResponse = '';
+        switch(eventType) {
+          case "daily":
+            aiResponse = "Thanks for sharing. Remember to focus on progress toward the Sprint Goal and identify any impediments. Would anyone else like to share their updates?";
+            break;
+          case "planning":
+            aiResponse = "That's important to consider. Let's make sure we're creating a realistic plan that delivers value and meets our Definition of Done. What do the Developers think about this?";
+            break;
+          case "review":
+            aiResponse = "Great observation about the Increment. Getting stakeholder feedback is crucial for inspection and adaptation. How might this feedback influence our Product Backlog?";
+            break;
+          case "retro":
+            aiResponse = "Thank you for that reflection. The purpose of the Sprint Retrospective is to identify improvements for our process. Let's think about how we can implement this as a concrete action.";
+            break;
+          default:
+            aiResponse = "I appreciate your input. Let's keep focusing on how we can apply the Scrum framework to deliver value effectively. What are your thoughts on next steps?";
+        }
+        
+        // Add AI response to storage
+        const aiMessage = await storage.addMessage({
+          type: "ai",
+          content: aiResponse,
+          eventType
+        });
+        
+        return res.json({ success: true, message: aiMessage });
+      }
 
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
