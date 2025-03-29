@@ -33,12 +33,12 @@ export class MemStorage implements IStorage {
   private initializeSimulationData() {
     const events = ["daily", "planning", "review", "retro"];
     
-    // Common team members across all events
+    // Common team members across all events - using Scrum Guide 2020 roles
     const teamMembers = [
       { name: "Alex", role: "Product Owner", status: "available" },
       { name: "Taylor", role: "Developer", status: "available" },
       { name: "Jordan", role: "Developer", status: "available" },
-      { name: "Morgan", role: "Designer", status: "available" },
+      { name: "Morgan", role: "Developer", status: "available" }, // Designer is a skill, not a Scrum role
       { name: "Casey", role: "Developer", status: "unavailable" }
     ];
 
@@ -51,10 +51,10 @@ export class MemStorage implements IStorage {
 
     // Role descriptions for each event
     const roleDescriptions = {
-      daily: "As the Scrum Master, facilitate the Daily Scrum to help the team share progress and identify impediments.",
-      planning: "As the Scrum Master, facilitate Sprint Planning to help the team determine what can be delivered and how the work will be achieved.",
-      review: "As the Scrum Master, facilitate the Sprint Review to help the team demonstrate what was accomplished during the sprint.",
-      retro: "As the Scrum Master, facilitate the Sprint Retrospective to help the team plan ways to improve quality and effectiveness."
+      daily: "As the Scrum Master, you ensure the Daily Scrum happens and that the Developers understand its purpose. You teach the team to keep the event within the 15-minute time-box and ensure the event is positive and productive.",
+      planning: "As the Scrum Master, you ensure the Sprint Planning happens and that attendees understand its purpose. You help the Scrum Team understand the need for a concise Product Backlog and Sprint Backlog, and teach them to respect the Sprint time-box.",
+      review: "As the Scrum Master, you ensure the Sprint Review happens and that attendees understand its purpose. You help the Scrum Team and stakeholders collaborate effectively and create a valuable Increment.",
+      retro: "As the Scrum Master, you ensure the Sprint Retrospective happens and that attendees understand its purpose. You promote a positive, productive meeting, and teach the team to keep it within the time-box while ensuring it becomes a formal opportunity to adapt."
     };
 
     // Create simulation info for each event
@@ -84,15 +84,15 @@ export class MemStorage implements IStorage {
   private getWelcomeMessage(eventType: string): string {
     switch(eventType) {
       case "daily":
-        return "Good morning team! Welcome to our Daily Scrum. Let's each share what we worked on yesterday, what we're planning for today, and if there are any impediments. Who would like to start?";
+        return "Good morning Developers! Welcome to our Daily Scrum. This is your 15-minute event to inspect progress toward the Sprint Goal and adapt the Sprint Backlog as needed. Let's create a plan for the next 24 hours. Who would like to start by sharing your progress toward our Sprint Goal?";
       case "planning":
-        return "Welcome to Sprint Planning! Today we'll decide what can be delivered in the upcoming sprint and how we'll accomplish it. Alex, would you like to walk us through the highest priority items in the Product Backlog?";
+        return "Welcome to our Sprint Planning! During the next few hours, we'll collaboratively define our Sprint Goal, select Product Backlog Items that align with that goal, and decompose that work into a plan. Alex, as the Product Owner, would you like to begin by discussing the highest value Product Backlog Items?";
       case "review":
-        return "Welcome to our Sprint Review! We're here to inspect the increment and adapt the Product Backlog. Taylor, are you ready to demonstrate the first feature the team completed?";
+        return "Welcome to our Sprint Review! This is where we inspect the Increment and adapt the Product Backlog based on what we've learned. We'll discuss what we've accomplished, answer questions, and collaborate on what to do next to optimize value. Taylor, are you ready to demonstrate what the team has completed this Sprint?";
       case "retro":
-        return "Welcome to our Sprint Retrospective! This is our opportunity to reflect on how the last sprint went regarding people, processes, and tools. Let's start by discussing what went well. Anyone want to share first?";
+        return "Welcome to our Sprint Retrospective! This is our opportunity to inspect how the last Sprint went regarding individuals, interactions, processes, tools, and our Definition of Done. We'll identify the most helpful changes to improve our effectiveness as a Scrum Team. What went well during this Sprint that we should continue doing?";
       default:
-        return "Welcome to our Scrum session! How can I help facilitate today?";
+        return "Welcome to our Scrum event! How can I help the team collaborate effectively today?";
     }
   }
 

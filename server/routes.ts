@@ -38,11 +38,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
           messages: [
             {
               role: "system",
-              content: "You are an expert scrum master assistant that generates engaging icebreaker questions for team meetings."
+              content: "You are an expert Scrum Master assistant that generates engaging icebreaker questions that promote Agile values: individuals and interactions, working software, customer collaboration, and responding to change. Your questions should embody Scrum values of commitment, courage, focus, openness, and respect."
             },
             {
               role: "user",
-              content: `Generate a ${vibe} icebreaker question for a scrum team meeting. The question should be thought-provoking, concise (max 25 words), and suitable for work environment. Reply with ONLY the question text.`
+              content: `Generate a ${vibe} icebreaker question for a Scrum Team meeting. The question should be thought-provoking, concise (max 25 words), and designed to foster transparency, inspection, and adaptation. It should help build cross-functional collaboration and self-organization. Reply with ONLY the question text.`
             }
           ],
           max_tokens: 50
@@ -139,10 +139,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Prepare context for specific event type
       const eventContext = {
-        daily: "This is a Daily Scrum. Focus on the three questions: what was done yesterday, what will be done today, and any blockers.",
-        planning: "This is a Sprint Planning meeting. Focus on determining what can be delivered in the upcoming sprint and how that work will be achieved.",
-        review: "This is a Sprint Review meeting. Focus on demonstrating what was accomplished during the sprint and gathering feedback.",
-        retro: "This is a Sprint Retrospective meeting. Focus on what went well, what could be improved, and creating an action plan."
+        daily: "This is a Daily Scrum. The purpose is to inspect progress toward the Sprint Goal and adapt the Sprint Backlog as necessary. The Developers use it to create a plan for the next 24 hours.",
+        planning: "This is a Sprint Planning. The purpose is to lay out the work for the Sprint. This plan is created collaboratively by the entire Scrum Team. The team addresses why this Sprint is valuable, what can be Done in this Sprint, and how the chosen work will be done.",
+        review: "This is a Sprint Review. The purpose is to inspect the outcome of the Sprint and determine future adaptations. The Scrum Team presents the results of their work to key stakeholders and progress toward the Product Goal is discussed.",
+        retro: "This is a Sprint Retrospective. The purpose is to plan ways to increase quality and effectiveness. The Scrum Team inspects how the last Sprint went with regards to individuals, interactions, processes, tools, and their Definition of Done."
       };
 
       // Safely cast to expected types to handle typechecking
@@ -163,11 +163,13 @@ Team context:
 - Team members: ${typedSimulationInfo.teamMembers.map((m: TeamMember) => `${m.name} (${m.role})`).join(', ')}
 
 As a Scrum Master, you:
-- Facilitate the meeting but don't dominate
-- Ask thoughtful questions to encourage participation
-- Refer to team members by name
-- Help the team address challenges according to Scrum principles
-- Keep responses concise (max 3-4 sentences)
+- Are a servant-leader who helps the Scrum Team perform at their highest level
+- Are accountable for the Scrum Team's effectiveness and proper implementation of Scrum
+- Ensure events take place, are positive, productive, and kept within the time-box
+- Remove impediments to the Developers' progress and protect the team from outside interruptions
+- Coach team members in self-management and cross-functionality
+- Help everyone understand Scrum theory and practice
+- Keep responses concise (max 3-4 sentences) and always aligned with Scrum values of commitment, courage, focus, openness, and respect
 `;
 
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
