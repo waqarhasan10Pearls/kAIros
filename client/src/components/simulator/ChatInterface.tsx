@@ -135,16 +135,19 @@ const ChatInterface = ({ selectedEvent }: ChatInterfaceProps) => {
         <textarea
           className="flex-grow border border-gray-300 rounded-l-md py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
           rows={2}
-          placeholder="Type your response as Scrum Master..."
+          placeholder="As the Scrum Master, what would you say or ask..."
           value={currentMessage}
           onChange={(e) => setCurrentMessage(e.target.value)}
           onKeyDown={handleKeyDown}
         ></textarea>
         <button 
-          className="bg-primary text-white px-4 rounded-r-md hover:bg-primary/90 transition-colors flex items-center justify-center"
+          className="bg-primary text-white px-3 sm:px-4 rounded-r-md hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 min-w-[80px] sm:min-w-[100px]"
           onClick={handleSendMessage}
           disabled={isPending || !currentMessage.trim()}
+          aria-label="Send message"
+          title="Send your message"
         >
+          <span className="hidden sm:inline">Send</span>
           <i className="ri-send-plane-fill"></i>
         </button>
       </div>
