@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getMessages, sendMessage } from "../../lib/api";
 import { Message, ScrumEventType } from "../../lib/types";
@@ -10,17 +10,33 @@ interface ChatInterfaceProps {
 
 const ChatInterface = ({ selectedEvent }: ChatInterfaceProps) => {
   const [currentMessage, setCurrentMessage] = useState("");
-
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  
   const { data: messages = [], isLoading: messagesLoading } = useQuery({
     queryKey: ['/api/messages', selectedEvent],
     queryFn: () => getMessages(selectedEvent),
-    enabled: !!selectedEvent
+    enabled: !!selectedEvent,
+    // Ensure we get fresh data
+    refetchInterval: 3000,
+    staleTime: 0,
   });
+  
+  // Scroll to bottom whenever messages change
+  useEffect(() => {
+    if (chatContainerRef.current && messages.length > 0) {
+      const container = chatContainerRef.current;
+      container.scrollTop = container.scrollHeight;
+    }
+  }, [messages]);
 
   const { mutate, isPending, error } = useMutation({
     mutationFn: (content: string) => sendMessage(selectedEvent, content),
     onSuccess: () => {
+      // Invalidate and refetch to update the messages
       queryClient.invalidateQueries({ queryKey: ['/api/messages', selectedEvent] });
+    },
+    onError: (error) => {
+      console.error("Message sending error:", error);
     }
   });
 
@@ -40,7 +56,7 @@ const ChatInterface = ({ selectedEvent }: ChatInterfaceProps) => {
 
   return (
     <div className="p-6 bg-white">
-      <div id="chat-container" className="h-80 overflow-y-auto mb-4 space-y-4 p-2">
+      <div ref={chatContainerRef} className="h-80 overflow-y-auto mb-4 space-y-4 p-2">
         {messagesLoading ? (
           <div className="flex items-center justify-center">
             <div className="flex space-x-1">
@@ -99,9 +115,19 @@ const ChatInterface = ({ selectedEvent }: ChatInterfaceProps) => {
       </div>
 
       {error && (
-        <div className="bg-red-100 text-red-700 p-3 rounded-md mb-4">
-          <i className="ri-error-warning-line mr-1"></i>
-          <span>{error instanceof Error ? error.message : "Error connecting to AI service. Please try again."}</span>
+        <div className="bg-red-100 text-red-700 p-3 rounded-md mb-4 flex items-center">
+          <i className="ri-error-warning-line mr-2 text-lg"></i>
+          <span className="flex-1">
+            {error instanceof Error 
+              ? error.message 
+              : "Error connecting to AI service. The message wasn't sent. Please try again."}
+          </span>
+          <button 
+            onClick={() => queryClient.invalidateQueries({ queryKey: ['/api/messages', selectedEvent] })}
+            className="text-red-700 hover:text-red-800 ml-2"
+          >
+            <i className="ri-refresh-line"></i>
+          </button>
         </div>
       )}
 

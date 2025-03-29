@@ -1,7 +1,9 @@
-import type { Express, Request, Response } from "express";
+import type { Express, Request, Response, NextFunction } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
+import { SimulationInfo, Message } from "../shared/schema";
+import { TeamMember, SprintDetails } from "../client/src/lib/types";
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || "";
 
@@ -58,8 +60,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.json({ question });
     } catch (error) {
       console.error("Error generating icebreaker:", error);
+      // Provide more detailed error logging
+      if (error instanceof Error) {
+        console.error("Error details:", error.message, error.stack);
+      } else if (error instanceof Response) {
+        console.error("Error status:", error.status, error.statusText);
+        try {
+          const errorData = await error.json();
+          console.error("API error response:", errorData);
+        } catch (e) {
+          console.error("Could not parse error response");
+        }
+      }
+      
       return res.status(500).json({ 
-        message: error instanceof Error ? error.message : "Error generating icebreaker question"
+        message: error instanceof Error ? error.message : "Error generating icebreaker question. Check server logs for details."
       });
     }
   });
@@ -113,8 +128,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       // Get context for the AI
-      const simulationInfo = await storage.getSimulationInfo(eventType);
-      const previousMessages = await storage.getMessages(eventType);
+      const simulationInfo: SimulationInfo = await storage.getSimulationInfo(eventType);
+      const previousMessages: Message[] = await storage.getMessages(eventType);
       
       // Format the conversation history for the AI
       const messageHistory = previousMessages.map(msg => ({
@@ -130,6 +145,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         retro: "This is a Sprint Retrospective meeting. Focus on what went well, what could be improved, and creating an action plan."
       };
 
+      // Safely cast to expected types to handle typechecking
+      const typedSimulationInfo = simulationInfo as unknown as {
+        sprintDetails: SprintDetails;
+        teamMembers: TeamMember[];
+      };
+      
       // Prepare system message
       const systemMessage = `
 You are an experienced Scrum Master facilitating a ${eventType} Scrum event. 
@@ -137,9 +158,9 @@ You are an experienced Scrum Master facilitating a ${eventType} Scrum event.
 ${eventContext[eventType as keyof typeof eventContext]}
 
 Team context:
-- Sprint #${simulationInfo.sprintDetails.number}
-- Previous velocity: ${simulationInfo.sprintDetails.previousVelocity} points
-- Team members: ${simulationInfo.teamMembers.map(m => `${m.name} (${m.role})`).join(', ')}
+- Sprint #${typedSimulationInfo.sprintDetails.number}
+- Previous velocity: ${typedSimulationInfo.sprintDetails.previousVelocity} points
+- Team members: ${typedSimulationInfo.teamMembers.map((m: TeamMember) => `${m.name} (${m.role})`).join(', ')}
 
 As a Scrum Master, you:
 - Facilitate the meeting but don't dominate
@@ -185,8 +206,21 @@ As a Scrum Master, you:
       return res.json({ success: true, message: aiMessage });
     } catch (error) {
       console.error("Error sending message:", error);
+      // Provide more detailed error logging
+      if (error instanceof Error) {
+        console.error("Error details:", error.message, error.stack);
+      } else if (error instanceof Response) {
+        console.error("Error status:", error.status, error.statusText);
+        try {
+          const errorData = await error.json();
+          console.error("API error response:", errorData);
+        } catch (e) {
+          console.error("Could not parse error response");
+        }
+      }
+      
       return res.status(500).json({ 
-        message: error instanceof Error ? error.message : "Error sending message"
+        message: error instanceof Error ? error.message : "Error processing message. Check server logs for details."
       });
     }
   });
