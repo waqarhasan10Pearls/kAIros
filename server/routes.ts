@@ -203,8 +203,9 @@ Reply with ONLY the question text.`
       
       // Prepare system message with structured Scrum knowledge
       const systemMessage = `
-You are an experienced Scrum Master facilitating a ${eventType} Scrum event. 
+You are an AI Coach supporting the user, who is a Scrum Master facilitating a ${eventType} Scrum event.
 
+About this scenario:
 ${eventContext[eventType as keyof typeof eventContext]}
 
 Team context:
@@ -212,13 +213,22 @@ Team context:
 - Previous velocity: ${typedSimulationInfo.sprintDetails.previousVelocity} points
 - Team members: ${typedSimulationInfo.teamMembers.map((m: TeamMember) => `${m.name} (${m.role})`).join(', ')}
 
-As a ${scrumTeam.roles.scrumMaster.name}, you:
-${scrumTeam.roles.scrumMaster.description}
+YOUR ROLE: You are NOT the Scrum Master. You are an AI Coach supporting the user, who IS the Scrum Master.
 
-Your accountabilities to the Team:
-${scrumTeam.roles.scrumMaster.accountabilities.toTeam.map(item => `- ${item}`).join('\n')}
+As an AI Coach, you should:
+1. Provide guidance and advice to help the user (Scrum Master) facilitate the event effectively
+2. Ask powerful coaching questions that help the Scrum Master reflect and improve
+3. Share relevant knowledge from the Scrum Guide 2020 and Agile Manifesto when appropriate
+4. Simulate team member responses when the Scrum Master interacts with the team
+5. Provide feedback on the Scrum Master's approach based on Scrum principles
 
-The Scrum Values you embody:
+Agile Manifesto Values:
+- Individuals and interactions over processes and tools
+- Working software over comprehensive documentation 
+- Customer collaboration over contract negotiation
+- Responding to change over following a plan
+
+The Scrum Values that should be reinforced:
 ${scrumValues.values.map(value => `- ${value}`).join('\n')}
 
 Additional requirements:
@@ -226,28 +236,29 @@ Additional requirements:
 - Be positive and solution-oriented
 - Focus on empiricism: transparency, inspection, and adaptation
 - Encourage self-management and cross-functionality
+- Make it clear that the USER is the Scrum Master and YOU are the coach/facilitator/simulator
 `;
 
       // If there's no API key, return a fallback response
       if (!OPENROUTER_API_KEY) {
         console.log("No OpenRouter API key available, returning fallback response");
-        // Create a generic Scrum Master response based on the event type
+        // Create a generic AI Coach response based on the event type
         let aiResponse = '';
         switch(eventType) {
           case "daily":
-            aiResponse = "Thanks for sharing. Remember to focus on progress toward the Sprint Goal and identify any impediments. Would anyone else like to share their updates?";
+            aiResponse = "As the Scrum Master, you might want to consider how the team is progressing toward the Sprint Goal. A powerful question you could ask might be: \"What impediments are preventing us from achieving our Sprint Goal?\" Remember, the Daily Scrum is for the Developers to inspect progress and adapt their plan.";
             break;
           case "planning":
-            aiResponse = "That's important to consider. Let's make sure we're creating a realistic plan that delivers value and meets our Definition of Done. What do the Developers think about this?";
+            aiResponse = "In your role as Scrum Master, you're facilitating this Planning session. Have you considered asking the team how confident they feel about the Definition of Done for these items? The Product Owner seems concerned about the scope - how might you help balance ambition with realism?";
             break;
           case "review":
-            aiResponse = "Great observation about the Increment. Getting stakeholder feedback is crucial for inspection and adaptation. How might this feedback influence our Product Backlog?";
+            aiResponse = "As you facilitate this Sprint Review, consider how you might help the team gather meaningful feedback from stakeholders. What questions could you ask to ensure the team understands how their work impacts the product's value? Remember the Review is an opportunity for inspection and adaptation of the Product.";
             break;
           case "retro":
-            aiResponse = "Thank you for that reflection. The purpose of the Sprint Retrospective is to identify improvements for our process. Let's think about how we can implement this as a concrete action.";
+            aiResponse = "In facilitating this Retrospective, you might want to focus on creating a safe space for the team to reflect honestly. Consider asking: \"What one change could make us more effective as a team?\" Remember that the Retrospective is about identifying improvements, not just listing problems.";
             break;
           default:
-            aiResponse = "I appreciate your input. Let's keep focusing on how we can apply the Scrum framework to deliver value effectively. What are your thoughts on next steps?";
+            aiResponse = "As the Scrum Master facilitating this event, your focus on empiricism is key. Consider how you might help the team inspect what's happening and adapt accordingly. What powerful questions could you ask that would help the team self-organize around this challenge?";
         }
         
         // Add AI response to storage

@@ -56,12 +56,12 @@ export class MemStorage implements IStorage {
       previousVelocity: 34
     };
 
-    // Role descriptions based on Scrum Guide 2020 for each event
+    // Role descriptions based on Scrum Guide 2020 for each event - User is the Scrum Master
     const roleDescriptions = {
-      daily: `As the ${scrumTeam.roles.scrumMaster.name}, your primary accountability is to ensure the Daily Scrum happens, is effective, and stays within the ${scrumEvents.dailyScrum.timebox} timebox. ${scrumEvents.dailyScrum.description} ${scrumEvents.dailyScrum.structure}`,
-      planning: `As the ${scrumTeam.roles.scrumMaster.name}, you facilitate the Sprint Planning which ${scrumEvents.sprintPlanning.description} The event is timeboxed to ${scrumEvents.sprintPlanning.timebox}. You help the team address: ${scrumEvents.sprintPlanning.topics.join(', ')}.`,
-      review: `As the ${scrumTeam.roles.scrumMaster.name}, you facilitate the Sprint Review where ${scrumEvents.sprintReview.description} ${scrumEvents.sprintReview.nature} The event is timeboxed to ${scrumEvents.sprintReview.timebox}.`,
-      retro: `As the ${scrumTeam.roles.scrumMaster.name}, you facilitate the Sprint Retrospective where ${scrumEvents.sprintRetrospective.description} The team examines: ${scrumEvents.sprintRetrospective.examination.join(', ')}. The event is timeboxed to ${scrumEvents.sprintRetrospective.timebox}.`
+      daily: `In this simulation, you are the ${scrumTeam.roles.scrumMaster.name}. Your primary accountability is to ensure the Daily Scrum happens, is effective, and stays within the ${scrumEvents.dailyScrum.timebox} timebox. ${scrumEvents.dailyScrum.description} ${scrumEvents.dailyScrum.structure} I (the AI) will provide coaching and simulate team responses.`,
+      planning: `In this simulation, you are the ${scrumTeam.roles.scrumMaster.name}. You facilitate the Sprint Planning which ${scrumEvents.sprintPlanning.description} The event is timeboxed to ${scrumEvents.sprintPlanning.timebox}. You help the team address: ${scrumEvents.sprintPlanning.topics.join(', ')}. I (the AI) will provide coaching and simulate team responses.`,
+      review: `In this simulation, you are the ${scrumTeam.roles.scrumMaster.name}. You facilitate the Sprint Review where ${scrumEvents.sprintReview.description} ${scrumEvents.sprintReview.nature} The event is timeboxed to ${scrumEvents.sprintReview.timebox}. I (the AI) will provide coaching and simulate team and stakeholder responses.`,
+      retro: `In this simulation, you are the ${scrumTeam.roles.scrumMaster.name}. You facilitate the Sprint Retrospective where ${scrumEvents.sprintRetrospective.description} The team examines: ${scrumEvents.sprintRetrospective.examination.join(', ')}. The event is timeboxed to ${scrumEvents.sprintRetrospective.timebox}. I (the AI) will provide coaching and simulate team responses.`
     };
 
     // Create simulation info for each event
@@ -94,15 +94,15 @@ export class MemStorage implements IStorage {
   private getWelcomeMessage(eventType: string): string {
     switch(eventType) {
       case "daily":
-        return `Good morning ${scrumTeam.roles.developers.name}! Welcome to our ${scrumEvents.dailyScrum.name}. ${scrumEvents.dailyScrum.description} This is a ${scrumEvents.dailyScrum.timebox} event. Let's focus on progress toward the ${scrumArtifacts.artifacts.sprintBacklog.commitment.name} and create a plan for the next 24 hours. Who would like to start by sharing your progress?`;
+        return `Welcome to the ${scrumEvents.dailyScrum.name} simulation. As the Scrum Master, you're about to facilitate this ${scrumEvents.dailyScrum.timebox} event. According to the Scrum Guide, ${scrumEvents.dailyScrum.description}\n\nThe purpose is to inspect progress toward the ${scrumArtifacts.artifacts.sprintBacklog.commitment.name} and adapt the Sprint Backlog as necessary.\n\nHow would you start this Daily Scrum as the Scrum Master?`;
       case "planning":
-        return `Welcome to our ${scrumEvents.sprintPlanning.name}! ${scrumEvents.sprintPlanning.description} We have ${scrumEvents.sprintPlanning.timebox} to address: ${scrumEvents.sprintPlanning.topics[0]}, ${scrumEvents.sprintPlanning.topics[1]}, and ${scrumEvents.sprintPlanning.topics[2]}. Alex, as the ${scrumTeam.roles.productOwner.name}, would you like to begin by discussing the highest value ${scrumArtifacts.artifacts.productBacklog.name} items?`;
+        return `Welcome to the ${scrumEvents.sprintPlanning.name} simulation. As the Scrum Master, you'll be facilitating this ${scrumEvents.sprintPlanning.timebox} event. According to the Scrum Guide, ${scrumEvents.sprintPlanning.description}\n\nThe key topics to address are: ${scrumEvents.sprintPlanning.topics[0]}, ${scrumEvents.sprintPlanning.topics[1]}, and ${scrumEvents.sprintPlanning.topics[2]}.\n\nHow would you begin facilitating this Sprint Planning session?`;
       case "review":
-        return `Welcome to our ${scrumEvents.sprintReview.name}! ${scrumEvents.sprintReview.description} Remember, this is a working session, not just a presentation. We'll examine what we've accomplished and discuss how to optimize value going forward. Taylor, would you like to start by showing the ${scrumArtifacts.artifacts.increment.name} the team has completed this Sprint?`;
+        return `Welcome to the ${scrumEvents.sprintReview.name} simulation. As the Scrum Master, you'll be facilitating this ${scrumEvents.sprintReview.timebox} event. According to the Scrum Guide, ${scrumEvents.sprintReview.description}\n\nRemember, this is a working session to inspect the ${scrumArtifacts.artifacts.increment.name} and adapt the ${scrumArtifacts.artifacts.productBacklog.name}.\n\nHow would you start this Sprint Review as the Scrum Master?`;
       case "retro":
-        return `Welcome to our ${scrumEvents.sprintRetrospective.name}! ${scrumEvents.sprintRetrospective.description} Let's examine: ${scrumEvents.sprintRetrospective.examination.join(', ')}. What went well during this Sprint that we should continue doing?`;
+        return `Welcome to the ${scrumEvents.sprintRetrospective.name} simulation. As the Scrum Master, you'll be facilitating this ${scrumEvents.sprintRetrospective.timebox} event. According to the Scrum Guide, ${scrumEvents.sprintRetrospective.description}\n\nThis is an opportunity for the Scrum Team to identify improvements for processes, interactions, and tools.\n\nHow would you begin facilitating this Retrospective session?`;
       default:
-        return "Welcome to our Scrum event! How can I help the team collaborate effectively today?";
+        return `Welcome to this Scrum event simulation. As the Scrum Master, how would you like to facilitate this session?`;
     }
   }
 
@@ -225,9 +225,9 @@ export class MemStorage implements IStorage {
         eventType: string;
         difficulty: string;
       };
-      return `Welcome to the "${challenge.title}" scenario for the ${eventType} Scrum event. ${challenge.description}\n\nAs the ${scrumTeam.roles.scrumMaster.name}, how would you address this challenge?`;
+      return `Welcome to the "${challenge.title}" scenario for the ${eventType} Scrum event.\n\n${challenge.description}\n\nYou are the Scrum Master in this scenario. How would you address this challenge? I'll provide coaching and guidance as you work through it.`;
     } else if (scenarioType === 'custom' && simulationInfo.customScenario) {
-      return `Welcome to your custom scenario for the ${eventType} Scrum event. Here's the situation you've described:\n\n${simulationInfo.customScenario}\n\nAs the ${scrumTeam.roles.scrumMaster.name}, how would you approach this situation?`;
+      return `Welcome to your custom scenario for the ${eventType} Scrum event. Here's the situation you've described:\n\n${simulationInfo.customScenario}\n\nYou are the Scrum Master in this scenario. How would you approach this situation? I'll act as your AI coach, offering guidance and simulating team responses as needed.`;
     } else {
       return this.getWelcomeMessage(eventType);
     }
