@@ -18,28 +18,28 @@ export const predefinedChallenges: ScenarioChallenge[] = [
   {
     id: "daily-overtime",
     title: "Overtime Issues",
-    description: "Team members are consistently working overtime to meet Sprint commitments, but they're not discussing these challenges during the Daily Scrum.",
+    description: "Developers are consistently working overtime to meet Sprint commitments, but they're not discussing these challenges during the Daily Scrum.",
     eventType: "daily",
     difficulty: "intermediate"
   },
   {
     id: "daily-absence",
     title: "Key Member Absence",
-    description: "A critical team member is unexpectedly absent, threatening the Sprint Goal. The team needs to replan their day but is uncertain how to proceed.",
+    description: "A critical Developer is unexpectedly absent, threatening the Sprint Goal. The Scrum Team needs to replan their day but is uncertain how to proceed.",
     eventType: "daily",
     difficulty: "intermediate"
   },
   {
     id: "daily-details",
     title: "Technical Deep Dive",
-    description: "The Daily Scrum consistently runs over the 15-minute timebox because developers dive into detailed technical discussions instead of focusing on progress toward the Sprint Goal.",
+    description: "The Daily Scrum consistently runs over the 15-minute timebox because Developers dive into detailed technical discussions instead of focusing on progress toward the Sprint Goal.",
     eventType: "daily",
     difficulty: "beginner"
   },
   {
     id: "daily-silence",
     title: "Silent Team Members",
-    description: "Some team members rarely speak during the Daily Scrum, while others dominate the conversation, creating an imbalance in team communication.",
+    description: "Some Developers rarely speak during the Daily Scrum, while others dominate the conversation, creating an imbalance in team communication.",
     eventType: "daily",
     difficulty: "advanced"
   },
@@ -48,35 +48,35 @@ export const predefinedChallenges: ScenarioChallenge[] = [
   {
     id: "planning-refinement",
     title: "Unrefined Backlog",
-    description: "The team is attempting Sprint Planning, but many Product Backlog items are poorly defined, lacking clarity and estimation.",
+    description: "The Scrum Team is attempting Sprint Planning, but many Product Backlog items are poorly defined, lacking clarity and estimation.",
     eventType: "planning",
     difficulty: "beginner"
   },
   {
     id: "planning-capacity",
     title: "Capacity Planning Issues",
-    description: "The Product Owner is pushing the team to commit to more work than their historical velocity suggests they can accomplish.",
+    description: "The Product Owner is pushing the Developers to commit to more work than their historical velocity suggests they can accomplish.",
     eventType: "planning",
     difficulty: "intermediate"
   },
   {
     id: "planning-dependencies",
     title: "External Dependencies",
-    description: "Several high-priority Product Backlog items have external dependencies on other teams or vendors, which may impact the team's ability to meet the Sprint Goal.",
+    description: "Several high-priority Product Backlog items have external dependencies on other teams or vendors, which may impact the Scrum Team's ability to meet the Sprint Goal.",
     eventType: "planning",
     difficulty: "advanced"
   },
   {
     id: "planning-scope",
     title: "Unclear Sprint Goal",
-    description: "The team is struggling to establish a clear, focused Sprint Goal that provides coherence to their work.",
+    description: "The Scrum Team is struggling to establish a clear, focused Sprint Goal that provides coherence to their work.",
     eventType: "planning",
     difficulty: "intermediate"
   },
   {
     id: "planning-technical-debt",
     title: "Technical Debt Dilemma",
-    description: "The team has accumulated significant technical debt that is slowing development, but the Product Owner is reluctant to allocate Sprint capacity to address it.",
+    description: "The Developers have accumulated significant technical debt that is slowing development, but the Product Owner is reluctant to allocate Sprint capacity to address it.",
     eventType: "planning",
     difficulty: "advanced"
   },
@@ -85,7 +85,7 @@ export const predefinedChallenges: ScenarioChallenge[] = [
   {
     id: "review-incomplete",
     title: "Incomplete Increment",
-    description: "The team has not completed all Sprint Backlog items and is unsure how to approach the Sprint Review when the Increment is incomplete.",
+    description: "The Scrum Team has not completed all Sprint Backlog items and is unsure how to approach the Sprint Review when the Increment is incomplete.",
     eventType: "review",
     difficulty: "beginner"
   },
@@ -122,28 +122,28 @@ export const predefinedChallenges: ScenarioChallenge[] = [
   {
     id: "retro-silence",
     title: "Silence and Disengagement",
-    description: "The team is disengaged during the Sprint Retrospective, providing minimal input on what went well or what could be improved.",
+    description: "The Scrum Team is disengaged during the Sprint Retrospective, providing minimal input on what went well or what could be improved.",
     eventType: "retro",
     difficulty: "beginner"
   },
   {
     id: "retro-blame",
     title: "Blame Game",
-    description: "The Retrospective has turned into a blame session, with team members pointing fingers at each other rather than focusing on systemic improvements.",
+    description: "The Retrospective has turned into a blame session, with Developers pointing fingers at each other rather than focusing on systemic improvements.",
     eventType: "retro",
     difficulty: "advanced"
   },
   {
     id: "retro-actionable",
     title: "Non-Actionable Items",
-    description: "While the team identifies issues during the Retrospective, they struggle to create actionable, measurable improvement plans.",
+    description: "While the Scrum Team identifies issues during the Retrospective, they struggle to create actionable, measurable improvement plans.",
     eventType: "retro",
     difficulty: "intermediate"
   },
   {
     id: "retro-repetition",
     title: "Repeated Issues",
-    description: "The same problems appear sprint after sprint in the Retrospective, suggesting that previous improvement plans are not being implemented effectively.",
+    description: "The same problems appear Sprint after Sprint in the Retrospective, suggesting that previous improvement plans are not being implemented effectively.",
     eventType: "retro",
     difficulty: "intermediate"
   },
