@@ -1,4 +1,4 @@
-import { VibeType } from "@/lib/types";
+import { VibeType } from "../../lib/types";
 
 interface VibeSelectorProps {
   selectedVibe: VibeType;

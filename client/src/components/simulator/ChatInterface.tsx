@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getMessages, sendMessage } from "@/lib/api";
-import { Message, ScrumEventType } from "@/lib/types";
-import { queryClient } from "@/lib/queryClient";
+import { getMessages, sendMessage } from "../../lib/api";
+import { Message, ScrumEventType } from "../../lib/types";
+import { queryClient } from "../../lib/queryClient";
 
 interface ChatInterfaceProps {
   selectedEvent: ScrumEventType;
@@ -13,6 +13,7 @@ const ChatInterface = ({ selectedEvent }: ChatInterfaceProps) => {
 
   const { data: messages = [], isLoading: messagesLoading } = useQuery({
     queryKey: ['/api/messages', selectedEvent],
+    queryFn: () => getMessages(selectedEvent),
     enabled: !!selectedEvent
   });
 

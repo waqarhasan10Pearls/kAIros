@@ -1,7 +1,7 @@
 import { useState } from "react";
 import VibeSelector from "./VibeSelector";
 import CirclePrompt from "./CirclePrompt";
-import { VibeType } from "@/lib/types";
+import { VibeType } from "../../lib/types";
 
 const IcebreakerTab = () => {
   const [selectedVibe, setSelectedVibe] = useState<VibeType>("random");

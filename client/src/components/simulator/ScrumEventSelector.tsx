@@ -1,4 +1,4 @@
-import { ScrumEventType } from "@/lib/types";
+import { ScrumEventType } from "../../lib/types";
 
 interface ScrumEventSelectorProps {
   selectedEvent: ScrumEventType;

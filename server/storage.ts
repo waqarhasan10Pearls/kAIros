@@ -3,7 +3,7 @@ import {
   type Message, 
   type SimulationInfo, 
   type InsertSimulationInfo 
-} from "@shared/schema";
+} from "../shared/schema";
 
 // modify the interface with any CRUD methods
 // you might need

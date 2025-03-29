@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { generateIcebreaker } from "@/lib/api";
-import { VibeType } from "@/lib/types";
+import { generateIcebreaker } from "../../lib/api";
+import { VibeType } from "../../lib/types";
 
 interface CirclePromptProps {
   selectedVibe: VibeType;

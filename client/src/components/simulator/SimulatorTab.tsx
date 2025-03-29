@@ -2,7 +2,7 @@ import { useState } from "react";
 import ScrumEventSelector from "./ScrumEventSelector";
 import SimulationInfo from "./SimulationInfo";
 import ChatInterface from "./ChatInterface";
-import { ScrumEventType } from "@/lib/types";
+import { ScrumEventType } from "../../lib/types";
 
 const SimulatorTab = () => {
   const [selectedEvent, setSelectedEvent] = useState<ScrumEventType>("planning");

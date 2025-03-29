@@ -1,4 +1,4 @@
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest } from "./queryClient";
 import { VibeType, ScrumEventType } from "./types";
 
 // Icebreaker Generator API

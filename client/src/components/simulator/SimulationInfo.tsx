@@ -1,5 +1,5 @@
-import { ScrumEventType } from "@/lib/types";
-import { getSimulationInfo } from "@/lib/api";
+import { ScrumEventType } from "../../lib/types";
+import { getSimulationInfo } from "../../lib/api";
 import { useQuery } from "@tanstack/react-query";
 
 interface SimulationInfoProps {
@@ -9,6 +9,7 @@ interface SimulationInfoProps {
 const SimulationInfo = ({ selectedEvent }: SimulationInfoProps) => {
   const { data, isLoading } = useQuery({
     queryKey: ['/api/simulation-info', selectedEvent],
+    queryFn: () => getSimulationInfo(selectedEvent),
     enabled: !!selectedEvent
   });
 
