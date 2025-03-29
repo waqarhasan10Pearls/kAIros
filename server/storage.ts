@@ -4,6 +4,7 @@ import {
   type SimulationInfo, 
   type InsertSimulationInfo 
 } from "../shared/schema";
+import { scrumEvents, scrumTeam, scrumArtifacts } from "./scrum-knowledge";
 
 // modify the interface with any CRUD methods
 // you might need
@@ -49,12 +50,12 @@ export class MemStorage implements IStorage {
       previousVelocity: 34
     };
 
-    // Role descriptions for each event
+    // Role descriptions based on Scrum Guide 2020 for each event
     const roleDescriptions = {
-      daily: "As the Scrum Master, you ensure the Daily Scrum happens and that the Developers understand its purpose. You teach the team to keep the event within the 15-minute time-box and ensure the event is positive and productive.",
-      planning: "As the Scrum Master, you ensure the Sprint Planning happens and that attendees understand its purpose. You help the Scrum Team understand the need for a concise Product Backlog and Sprint Backlog, and teach them to respect the Sprint time-box.",
-      review: "As the Scrum Master, you ensure the Sprint Review happens and that attendees understand its purpose. You help the Scrum Team and stakeholders collaborate effectively and create a valuable Increment.",
-      retro: "As the Scrum Master, you ensure the Sprint Retrospective happens and that attendees understand its purpose. You promote a positive, productive meeting, and teach the team to keep it within the time-box while ensuring it becomes a formal opportunity to adapt."
+      daily: `As the ${scrumTeam.roles.scrumMaster.name}, your primary accountability is to ensure the Daily Scrum happens, is effective, and stays within the ${scrumEvents.dailyScrum.timebox} timebox. ${scrumEvents.dailyScrum.description} ${scrumEvents.dailyScrum.structure}`,
+      planning: `As the ${scrumTeam.roles.scrumMaster.name}, you facilitate the Sprint Planning which ${scrumEvents.sprintPlanning.description} The event is timeboxed to ${scrumEvents.sprintPlanning.timebox}. You help the team address: ${scrumEvents.sprintPlanning.topics.join(', ')}.`,
+      review: `As the ${scrumTeam.roles.scrumMaster.name}, you facilitate the Sprint Review where ${scrumEvents.sprintReview.description} ${scrumEvents.sprintReview.nature} The event is timeboxed to ${scrumEvents.sprintReview.timebox}.`,
+      retro: `As the ${scrumTeam.roles.scrumMaster.name}, you facilitate the Sprint Retrospective where ${scrumEvents.sprintRetrospective.description} The team examines: ${scrumEvents.sprintRetrospective.examination.join(', ')}. The event is timeboxed to ${scrumEvents.sprintRetrospective.timebox}.`
     };
 
     // Create simulation info for each event
@@ -84,13 +85,13 @@ export class MemStorage implements IStorage {
   private getWelcomeMessage(eventType: string): string {
     switch(eventType) {
       case "daily":
-        return "Good morning Developers! Welcome to our Daily Scrum. This is your 15-minute event to inspect progress toward the Sprint Goal and adapt the Sprint Backlog as needed. Let's create a plan for the next 24 hours. Who would like to start by sharing your progress toward our Sprint Goal?";
+        return `Good morning ${scrumTeam.roles.developers.name}! Welcome to our ${scrumEvents.dailyScrum.name}. ${scrumEvents.dailyScrum.description} This is a ${scrumEvents.dailyScrum.timebox} event. Let's focus on progress toward the ${scrumArtifacts.artifacts.sprintBacklog.commitment.name} and create a plan for the next 24 hours. Who would like to start by sharing your progress?`;
       case "planning":
-        return "Welcome to our Sprint Planning! During the next few hours, we'll collaboratively define our Sprint Goal, select Product Backlog Items that align with that goal, and decompose that work into a plan. Alex, as the Product Owner, would you like to begin by discussing the highest value Product Backlog Items?";
+        return `Welcome to our ${scrumEvents.sprintPlanning.name}! ${scrumEvents.sprintPlanning.description} We have ${scrumEvents.sprintPlanning.timebox} to address: ${scrumEvents.sprintPlanning.topics[0]}, ${scrumEvents.sprintPlanning.topics[1]}, and ${scrumEvents.sprintPlanning.topics[2]}. Alex, as the ${scrumTeam.roles.productOwner.name}, would you like to begin by discussing the highest value ${scrumArtifacts.artifacts.productBacklog.name} items?`;
       case "review":
-        return "Welcome to our Sprint Review! This is where we inspect the Increment and adapt the Product Backlog based on what we've learned. We'll discuss what we've accomplished, answer questions, and collaborate on what to do next to optimize value. Taylor, are you ready to demonstrate what the team has completed this Sprint?";
+        return `Welcome to our ${scrumEvents.sprintReview.name}! ${scrumEvents.sprintReview.description} Remember, this is a working session, not just a presentation. We'll examine what we've accomplished and discuss how to optimize value going forward. Taylor, would you like to start by showing the ${scrumArtifacts.artifacts.increment.name} the team has completed this Sprint?`;
       case "retro":
-        return "Welcome to our Sprint Retrospective! This is our opportunity to inspect how the last Sprint went regarding individuals, interactions, processes, tools, and our Definition of Done. We'll identify the most helpful changes to improve our effectiveness as a Scrum Team. What went well during this Sprint that we should continue doing?";
+        return `Welcome to our ${scrumEvents.sprintRetrospective.name}! ${scrumEvents.sprintRetrospective.description} Let's examine: ${scrumEvents.sprintRetrospective.examination.join(', ')}. What went well during this Sprint that we should continue doing?`;
       default:
         return "Welcome to our Scrum event! How can I help the team collaborate effectively today?";
     }

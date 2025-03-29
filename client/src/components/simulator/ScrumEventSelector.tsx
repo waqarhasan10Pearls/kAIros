@@ -10,22 +10,22 @@ const ScrumEventSelector = ({ selectedEvent, setSelectedEvent }: ScrumEventSelec
     { 
       type: "daily" as ScrumEventType, 
       title: "Daily Scrum", 
-      description: "15-minute time-boxed event" 
+      description: "Inspect progress toward the Sprint Goal" 
     },
     { 
       type: "planning" as ScrumEventType, 
       title: "Sprint Planning", 
-      description: "Decide what can be delivered" 
+      description: "Lay out the work to be performed in the Sprint" 
     },
     { 
       type: "review" as ScrumEventType, 
       title: "Sprint Review", 
-      description: "Inspect the increment" 
+      description: "Inspect the outcome of the Sprint" 
     },
     { 
       type: "retro" as ScrumEventType, 
       title: "Sprint Retrospective", 
-      description: "Plan for improvements" 
+      description: "Plan ways to increase quality and effectiveness" 
     },
   ];
 

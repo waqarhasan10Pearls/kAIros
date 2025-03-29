@@ -4,6 +4,7 @@ import { storage } from "./storage";
 import { z } from "zod";
 import { SimulationInfo, Message } from "../shared/schema";
 import { TeamMember, SprintDetails } from "../client/src/lib/types";
+import { scrumEvents, scrumTeam, scrumValues } from "./scrum-knowledge";
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || "";
 
@@ -38,11 +39,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
           messages: [
             {
               role: "system",
-              content: "You are an expert Scrum Master assistant that generates engaging icebreaker questions that promote Agile values: individuals and interactions, working software, customer collaboration, and responding to change. Your questions should embody Scrum values of commitment, courage, focus, openness, and respect."
+              content: `You are an expert Scrum Master assistant that generates engaging icebreaker questions that promote Agile principles and Scrum values.
+
+Scrum Values to embody:
+${scrumValues.values.map(value => `- ${value}: ${value}`).join('\n')}
+
+${scrumValues.description}
+
+Scrum Team Structure:
+${scrumTeam.composition}
+${scrumTeam.characteristics.map(char => `- ${char}`).join('\n')}
+`
             },
             {
               role: "user",
-              content: `Generate a ${vibe} icebreaker question for a Scrum Team meeting. The question should be thought-provoking, concise (max 25 words), and designed to foster transparency, inspection, and adaptation. It should help build cross-functional collaboration and self-organization. Reply with ONLY the question text.`
+              content: `Generate a ${vibe} icebreaker question for a Scrum Team meeting. The question should be:
+- Thought-provoking and concise (max 25 words)
+- Designed to foster transparency, inspection, and adaptation
+- Supportive of building cross-functional collaboration and self-management
+- Aligned with Scrum values (commitment, courage, focus, openness, respect)
+- ${vibe === "funny" ? "Lighthearted and humorous" : vibe === "deep" ? "Reflective and meaningful" : vibe === "creative" ? "Imaginative and innovative" : "Balanced and engaging"}
+
+Reply with ONLY the question text.`
             }
           ],
           max_tokens: 50
@@ -137,12 +155,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         content: msg.content
       }));
 
-      // Prepare context for specific event type
+      // Use Scrum event descriptions from the Scrum Guide 2020
       const eventContext = {
-        daily: "This is a Daily Scrum. The purpose is to inspect progress toward the Sprint Goal and adapt the Sprint Backlog as necessary. The Developers use it to create a plan for the next 24 hours.",
-        planning: "This is a Sprint Planning. The purpose is to lay out the work for the Sprint. This plan is created collaboratively by the entire Scrum Team. The team addresses why this Sprint is valuable, what can be Done in this Sprint, and how the chosen work will be done.",
-        review: "This is a Sprint Review. The purpose is to inspect the outcome of the Sprint and determine future adaptations. The Scrum Team presents the results of their work to key stakeholders and progress toward the Product Goal is discussed.",
-        retro: "This is a Sprint Retrospective. The purpose is to plan ways to increase quality and effectiveness. The Scrum Team inspects how the last Sprint went with regards to individuals, interactions, processes, tools, and their Definition of Done."
+        daily: scrumEvents.dailyScrum.description,
+        planning: scrumEvents.sprintPlanning.description,
+        review: scrumEvents.sprintReview.description,
+        retro: scrumEvents.sprintRetrospective.description
       };
 
       // Safely cast to expected types to handle typechecking
@@ -151,7 +169,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         teamMembers: TeamMember[];
       };
       
-      // Prepare system message
+      // Prepare system message with structured Scrum knowledge
       const systemMessage = `
 You are an experienced Scrum Master facilitating a ${eventType} Scrum event. 
 
@@ -162,14 +180,20 @@ Team context:
 - Previous velocity: ${typedSimulationInfo.sprintDetails.previousVelocity} points
 - Team members: ${typedSimulationInfo.teamMembers.map((m: TeamMember) => `${m.name} (${m.role})`).join(', ')}
 
-As a Scrum Master, you:
-- Are a servant-leader who helps the Scrum Team perform at their highest level
-- Are accountable for the Scrum Team's effectiveness and proper implementation of Scrum
-- Ensure events take place, are positive, productive, and kept within the time-box
-- Remove impediments to the Developers' progress and protect the team from outside interruptions
-- Coach team members in self-management and cross-functionality
-- Help everyone understand Scrum theory and practice
-- Keep responses concise (max 3-4 sentences) and always aligned with Scrum values of commitment, courage, focus, openness, and respect
+As a ${scrumTeam.roles.scrumMaster.name}, you:
+${scrumTeam.roles.scrumMaster.description}
+
+Your accountabilities to the Team:
+${scrumTeam.roles.scrumMaster.accountabilities.toTeam.map(item => `- ${item}`).join('\n')}
+
+The Scrum Values you embody:
+${scrumValues.values.map(value => `- ${value}`).join('\n')}
+
+Additional requirements:
+- Keep responses concise (max 3-4 sentences) and focused on the event at hand
+- Be positive and solution-oriented
+- Focus on empiricism: transparency, inspection, and adaptation
+- Encourage self-management and cross-functionality
 `;
 
       const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {

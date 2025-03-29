@@ -1,6 +1,7 @@
 import { ScrumEventType } from "../../lib/types";
 import { getSimulationInfo } from "../../lib/api";
 import { useQuery } from "@tanstack/react-query";
+import { Badge } from "../ui/badge";
 
 interface SimulationInfoProps {
   selectedEvent: ScrumEventType;
@@ -48,38 +49,55 @@ const SimulationInfo = ({ selectedEvent }: SimulationInfoProps) => {
   if (!data) return null;
 
   const eventTitles = {
-    daily: "Daily Scrum Session",
-    planning: "Sprint Planning Session",
-    review: "Sprint Review Session",
-    retro: "Sprint Retrospective Session"
+    daily: "Daily Scrum",
+    planning: "Sprint Planning",
+    review: "Sprint Review",
+    retro: "Sprint Retrospective"
+  };
+
+  const eventTimeboxes = {
+    daily: "15 minutes",
+    planning: "8 hours for a 1-month Sprint",
+    review: "4 hours for a 1-month Sprint",
+    retro: "3 hours for a 1-month Sprint"
+  };
+
+  const scrumRoles = {
+    "Product Owner": "primary-blue",
+    "Scrum Master": "primary-green",
+    "Developer": "primary-orange"
   };
 
   return (
     <div className="p-6 bg-gray-50 border-b border-gray-200">
-      <h3 className="font-bold mb-2">{eventTitles[selectedEvent]}</h3>
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
+        <h3 className="font-bold">{eventTitles[selectedEvent]}</h3>
+        <Badge variant="outline" className="mt-2 sm:mt-0">Timebox: {eventTimeboxes[selectedEvent]}</Badge>
+      </div>
+      
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div>
-          <h4 className="text-sm font-medium text-gray-700">Team Members</h4>
+          <h4 className="text-sm font-medium text-gray-700">Scrum Team</h4>
           <ul className="text-sm text-gray-600 mt-1 space-y-1">
             {data.teamMembers.map((member: {name: string, role: string, status: string}, index: number) => (
               <li key={index} className="flex items-center">
                 <span className={`h-2 w-2 rounded-full ${member.status === 'available' ? 'bg-green-500' : 'bg-yellow-500'} mr-2`}></span>
-                {member.name} ({member.role})
+                {member.name} <span className="text-xs ml-1">({member.role})</span>
               </li>
             ))}
           </ul>
         </div>
         <div>
-          <h4 className="text-sm font-medium text-gray-700">Sprint Details</h4>
+          <h4 className="text-sm font-medium text-gray-700">Sprint Information</h4>
           <ul className="text-sm text-gray-600 mt-1 space-y-1">
-            <li>Sprint #{data.sprintDetails.number}</li>
-            <li>Duration: {data.sprintDetails.duration}</li>
-            <li>Prev. Velocity: {data.sprintDetails.previousVelocity} points</li>
+            <li>Current Sprint: #{data.sprintDetails.number}</li>
+            <li>Sprint Duration: {data.sprintDetails.duration}</li>
+            <li>Previous Velocity: {data.sprintDetails.previousVelocity} points</li>
           </ul>
         </div>
         <div>
-          <h4 className="text-sm font-medium text-gray-700">Your Role</h4>
-          <p className="text-sm text-gray-600 mt-1">
+          <h4 className="text-sm font-medium text-gray-700">Your Role: Scrum Master</h4>
+          <p className="text-sm text-gray-600 mt-1 max-h-24 overflow-y-auto pr-2">
             {data.roleDescription}
           </p>
         </div>
