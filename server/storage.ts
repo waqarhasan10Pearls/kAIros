@@ -5,6 +5,8 @@ import {
   type InsertSimulationInfo 
 } from "../shared/schema";
 import { scrumEvents, scrumTeam, scrumArtifacts } from "./scrum-knowledge";
+import { ScenarioChallenge, ScenarioType } from "../client/src/lib/types";
+import { getScenarioChallenges, getScenarioChallengeById } from "./scenario-challenges";
 
 // modify the interface with any CRUD methods
 // you might need
@@ -13,6 +15,8 @@ export interface IStorage {
   getSimulationInfo(eventType: string): Promise<SimulationInfo>;
   getMessages(eventType: string): Promise<Message[]>;
   addMessage(message: InsertMessage): Promise<Message>;
+  getScenarioChallenges(eventType: string): Promise<ScenarioChallenge[]>;
+  startScenario(eventType: string, scenarioType: ScenarioType, scenarioId?: string, customScenario?: string): Promise<SimulationInfo>;
 }
 
 export class MemStorage implements IStorage {
@@ -20,12 +24,14 @@ export class MemStorage implements IStorage {
   private messages: Map<string, Message[]>;
   private messageCurrentId: number;
   private simulationInfoCurrentId: number;
+  private scenarioChallenges: Map<string, ScenarioChallenge[]>;
 
   constructor() {
     this.simulationInfos = new Map();
     this.messages = new Map();
     this.messageCurrentId = 1;
     this.simulationInfoCurrentId = 1;
+    this.scenarioChallenges = new Map();
     
     // Initialize with default simulation data
     this.initializeSimulationData();
@@ -66,7 +72,10 @@ export class MemStorage implements IStorage {
         eventType,
         teamMembers,
         sprintDetails,
-        roleDescription: roleDescriptions[eventType as keyof typeof roleDescriptions]
+        roleDescription: roleDescriptions[eventType as keyof typeof roleDescriptions],
+        scenarioType: null,
+        scenarioChallenge: null,
+        customScenario: null
       };
       this.simulationInfos.set(eventType, info);
       
@@ -139,6 +148,88 @@ export class MemStorage implements IStorage {
     } catch (error) {
       console.error("Error adding message:", error);
       throw error;
+    }
+  }
+
+  async getScenarioChallenges(eventType: string): Promise<ScenarioChallenge[]> {
+    try {
+      // Return predefined challenges from the scenario-challenges.ts file
+      return getScenarioChallenges(eventType);
+    } catch (error) {
+      console.error("Error getting scenario challenges:", error);
+      return [];
+    }
+  }
+
+  async startScenario(
+    eventType: string, 
+    scenarioType: ScenarioType, 
+    scenarioId?: string, 
+    customScenario?: string
+  ): Promise<SimulationInfo> {
+    try {
+      // Get the current simulation info
+      const currentInfo = await this.getSimulationInfo(eventType);
+      
+      // Create the updated simulation info
+      const updatedInfo: SimulationInfo = {
+        ...currentInfo,
+        scenarioType
+      };
+
+      // Handle predefined scenario challenges
+      if (scenarioType === 'predefined' && scenarioId) {
+        const challenge = getScenarioChallengeById(scenarioId);
+        if (!challenge) {
+          throw new Error(`Scenario challenge not found: ${scenarioId}`);
+        }
+        updatedInfo.scenarioChallenge = challenge;
+      }
+      
+      // Handle custom scenarios
+      if (scenarioType === 'custom' && customScenario) {
+        updatedInfo.customScenario = customScenario;
+      }
+
+      // Update the simulation info
+      this.simulationInfos.set(eventType, updatedInfo);
+
+      // Clear existing messages and add a new welcome message specific to the scenario
+      const initialMessages: Message[] = [{
+        id: this.messageCurrentId++,
+        eventType,
+        type: "ai",
+        content: this.getScenarioWelcomeMessage(eventType, scenarioType, updatedInfo),
+        timestamp: new Date()
+      }];
+      this.messages.set(eventType, initialMessages);
+
+      return updatedInfo;
+    } catch (error) {
+      console.error("Error starting scenario:", error);
+      throw error;
+    }
+  }
+
+  private getScenarioWelcomeMessage(
+    eventType: string, 
+    scenarioType: ScenarioType, 
+    simulationInfo: SimulationInfo
+  ): string {
+    if (scenarioType === 'predefined' && simulationInfo.scenarioChallenge) {
+      // Access the challenge properties safely using type assertion with known structure
+      const challenge = simulationInfo.scenarioChallenge as {
+        id: string;
+        title: string;
+        description: string;
+        eventType: string;
+        difficulty: string;
+      };
+      return `Welcome to the "${challenge.title}" scenario for the ${eventType} Scrum event. ${challenge.description}\n\nAs the ${scrumTeam.roles.scrumMaster.name}, how would you address this challenge?`;
+    } else if (scenarioType === 'custom' && simulationInfo.customScenario) {
+      return `Welcome to your custom scenario for the ${eventType} Scrum event. Here's the situation you've described:\n\n${simulationInfo.customScenario}\n\nAs the ${scrumTeam.roles.scrumMaster.name}, how would you approach this situation?`;
+    } else {
+      return this.getWelcomeMessage(eventType);
     }
   }
 }

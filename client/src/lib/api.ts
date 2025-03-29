@@ -1,5 +1,5 @@
 import { apiRequest } from "./queryClient";
-import { VibeType, ScrumEventType } from "./types";
+import { VibeType, ScrumEventType, ScenarioChallenge } from "./types";
 
 // Icebreaker Generator API
 export const generateIcebreaker = async (vibe: VibeType) => {
@@ -21,5 +21,29 @@ export const getMessages = async (eventType: ScrumEventType) => {
 
 export const sendMessage = async (eventType: ScrumEventType, content: string) => {
   const res = await apiRequest("POST", "/api/messages", { eventType, content });
+  return res.json();
+};
+
+// Scenario Challenge APIs
+export const getScenarioChallenges = async (eventType: ScrumEventType) => {
+  const res = await apiRequest("GET", `/api/scenario-challenges?eventType=${eventType}`);
+  return res.json();
+};
+
+export const startScenarioChallenge = async (eventType: ScrumEventType, scenarioId: string) => {
+  const res = await apiRequest("POST", "/api/start-scenario", { 
+    eventType, 
+    scenarioId,
+    scenarioType: 'predefined' 
+  });
+  return res.json();
+};
+
+export const startCustomScenario = async (eventType: ScrumEventType, customScenario: string) => {
+  const res = await apiRequest("POST", "/api/start-scenario", { 
+    eventType, 
+    customScenario,
+    scenarioType: 'custom' 
+  });
   return res.json();
 };

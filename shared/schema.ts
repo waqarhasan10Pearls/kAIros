@@ -9,6 +9,9 @@ export const simulationInfo = pgTable("simulation_info", {
   teamMembers: jsonb("team_members").notNull(),
   sprintDetails: jsonb("sprint_details").notNull(),
   roleDescription: text("role_description").notNull(),
+  scenarioType: text("scenario_type"), // 'predefined' or 'custom'
+  scenarioChallenge: jsonb("scenario_challenge"), // for predefined scenarios
+  customScenario: text("custom_scenario"), // for custom scenarios
 });
 
 export const insertSimulationInfoSchema = createInsertSchema(simulationInfo).pick({
@@ -16,6 +19,9 @@ export const insertSimulationInfoSchema = createInsertSchema(simulationInfo).pic
   teamMembers: true,
   sprintDetails: true,
   roleDescription: true,
+  scenarioType: true,
+  scenarioChallenge: true,
+  customScenario: true,
 });
 
 // Messages schema

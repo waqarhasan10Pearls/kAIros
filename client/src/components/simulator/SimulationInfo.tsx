@@ -102,6 +102,38 @@ const SimulationInfo = ({ selectedEvent }: SimulationInfoProps) => {
           </p>
         </div>
       </div>
+
+      {/* Display active scenario information if available */}
+      {data.scenarioType && (
+        <div className="mt-4 pt-4 border-t border-gray-200">
+          <div className="flex items-center">
+            <h4 className="text-sm font-medium text-gray-700 mr-2">Active Scenario:</h4>
+            <Badge 
+              variant={data.scenarioType === 'predefined' ? 'default' : 'secondary'}
+              className="text-xs"
+            >
+              {data.scenarioType === 'predefined' ? 'Predefined' : 'Custom'}
+            </Badge>
+          </div>
+          
+          {data.scenarioType === 'predefined' && data.scenarioChallenge && (
+            <div className="mt-2">
+              <h5 className="text-sm font-semibold">{data.scenarioChallenge.title}</h5>
+              <Badge variant="outline" className="mt-1 mb-2 text-xs">
+                Difficulty: {data.scenarioChallenge.difficulty}
+              </Badge>
+              <p className="text-sm text-gray-600">{data.scenarioChallenge.description}</p>
+            </div>
+          )}
+          
+          {data.scenarioType === 'custom' && data.customScenario && (
+            <div className="mt-2">
+              <h5 className="text-sm font-semibold">Custom Scenario</h5>
+              <p className="text-sm text-gray-600 mt-1">{data.customScenario}</p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

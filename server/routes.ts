@@ -3,7 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { z } from "zod";
 import { SimulationInfo, Message } from "../shared/schema";
-import { TeamMember, SprintDetails } from "../client/src/lib/types";
+import { TeamMember, SprintDetails, ScenarioType } from "../client/src/lib/types";
 import { scrumEvents, scrumTeam, scrumValues } from "./scrum-knowledge";
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || "";
@@ -18,6 +18,25 @@ const icebreakerSchema = z.object({
 const messageSchema = z.object({
   eventType: z.enum(["daily", "planning", "review", "retro"]),
   content: z.string().min(1)
+});
+
+// Validate start scenario request body
+const startScenarioSchema = z.object({
+  eventType: z.enum(["daily", "planning", "review", "retro"]),
+  scenarioType: z.enum(["predefined", "custom"]),
+  scenarioId: z.string().optional(),
+  customScenario: z.string().optional()
+})
+.refine(data => {
+  if (data.scenarioType === 'predefined') {
+    return !!data.scenarioId;
+  }
+  if (data.scenarioType === 'custom') {
+    return !!data.customScenario;
+  }
+  return false;
+}, {
+  message: "scenarioId is required for predefined scenarios, customScenario is required for custom scenarios"
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -292,6 +311,48 @@ Additional requirements:
       
       return res.status(500).json({ 
         message: error instanceof Error ? error.message : "Error processing message. Check server logs for details."
+      });
+    }
+  });
+
+  // Get scenario challenges for a specific event type
+  app.get("/api/scenario-challenges", async (req: Request, res: Response) => {
+    try {
+      const eventType = req.query.eventType as string;
+      if (!["daily", "planning", "review", "retro"].includes(eventType)) {
+        return res.status(400).json({ message: "Invalid event type" });
+      }
+
+      const challenges = await storage.getScenarioChallenges(eventType);
+      return res.json(challenges);
+    } catch (error) {
+      console.error("Error fetching scenario challenges:", error);
+      return res.status(500).json({ 
+        message: error instanceof Error ? error.message : "Error fetching scenario challenges"
+      });
+    }
+  });
+
+  // Start a scenario (predefined or custom)
+  app.post("/api/start-scenario", async (req: Request, res: Response) => {
+    try {
+      const { eventType, scenarioType, scenarioId, customScenario } = 
+        startScenarioSchema.parse(req.body);
+      
+      console.log(`Starting ${scenarioType} scenario for ${eventType} event`);
+      
+      const updatedSimulationInfo = await storage.startScenario(
+        eventType, 
+        scenarioType as ScenarioType, 
+        scenarioId, 
+        customScenario
+      );
+      
+      return res.json(updatedSimulationInfo);
+    } catch (error) {
+      console.error("Error starting scenario:", error);
+      return res.status(500).json({ 
+        message: error instanceof Error ? error.message : "Error starting scenario"
       });
     }
   });

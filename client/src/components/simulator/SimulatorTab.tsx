@@ -2,6 +2,7 @@ import { useState } from "react";
 import ScrumEventSelector from "./ScrumEventSelector";
 import SimulationInfo from "./SimulationInfo";
 import ChatInterface from "./ChatInterface";
+import ScenarioSelector from "./ScenarioSelector";
 import { ScrumEventType } from "../../lib/types";
 
 const SimulatorTab = () => {
@@ -17,6 +18,8 @@ const SimulatorTab = () => {
           selectedEvent={selectedEvent} 
           setSelectedEvent={setSelectedEvent} 
         />
+        
+        <ScenarioSelector selectedEvent={selectedEvent} />
       </div>
 
       <SimulationInfo selectedEvent={selectedEvent} />
