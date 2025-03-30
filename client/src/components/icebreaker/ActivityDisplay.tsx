@@ -132,8 +132,8 @@ ${activity.instructions.map((instruction, index) => {
                 // Remove any leading numbers (like "1. " or "1.") from the instruction
                 const cleanInstruction = instruction.replace(/^\d+\.\s*/, '');
                 return (
-                  <li key={index} className="text-gray-600 dark:text-gray-300 pb-2">
-                    <span className="font-medium text-gray-800 dark:text-gray-200">Step {index + 1}:</span> {cleanInstruction}
+                  <li key={index} className="text-gray-600 dark:text-gray-300 pb-2 font-medium">
+                    {cleanInstruction}
                   </li>
                 );
               })}

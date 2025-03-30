@@ -98,7 +98,7 @@ const ChatInterface = ({ selectedEvent }: ChatInterfaceProps) => {
             {messages.map((message: Message, index: number) => (
               <div 
                 key={index} 
-                className={`flex items-start ${message.type === 'user' ? 'justify-end' : ''} max-w-[85%] ${message.type === 'user' ? 'ml-auto' : 'mr-auto'}`}
+                className={`flex items-start ${message.type === 'user' ? 'justify-end' : ''} max-w-[95%] sm:max-w-[85%] ${message.type === 'user' ? 'ml-auto' : 'mr-auto'}`}
               >
                 {message.type === 'ai' && (
                   <div className="flex-shrink-0 w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mr-2 dark:bg-blue-900/30 dark:text-blue-400 ring-2 ring-white dark:ring-gray-800">
@@ -116,7 +116,7 @@ const ChatInterface = ({ selectedEvent }: ChatInterfaceProps) => {
                   `}
                 >
                   {/* Message sender label */}
-                  <div className="absolute -top-5 text-xs text-gray-500 font-medium dark:text-gray-400">
+                  <div className="text-xs text-gray-500 font-medium mb-1 dark:text-gray-400">
                     {message.type === 'user' ? 'You (Scrum Master)' : 'Team Member'}
                   </div>
                   
@@ -169,11 +169,14 @@ const ChatInterface = ({ selectedEvent }: ChatInterfaceProps) => {
             ))}
             
             {isPending && (
-              <div className="flex items-start max-w-[85%]">
+              <div className="flex items-start max-w-[95%] sm:max-w-[85%]">
                 <div className="flex-shrink-0 w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mr-2 dark:bg-blue-900/30 dark:text-blue-400 ring-2 ring-white dark:ring-gray-800">
                   <i className="ri-team-line"></i>
                 </div>
                 <div className="bg-white text-gray-800 rounded-lg rounded-tl-none px-4 py-3 shadow-sm border border-gray-100 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700">
+                  <div className="text-xs text-gray-500 font-medium mb-1 dark:text-gray-400">
+                    Team Member
+                  </div>
                   <div className="flex space-x-2">
                     <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce dark:bg-gray-500"></div>
                     <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce delay-75 dark:bg-gray-500"></div>
@@ -228,18 +231,18 @@ const ChatInterface = ({ selectedEvent }: ChatInterfaceProps) => {
           onKeyDown={handleKeyDown}
         />
         
-        <div className="flex items-center justify-between">
-          <p className="text-xs text-gray-500 dark:text-gray-400">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <p className="text-xs text-gray-500 dark:text-gray-400 order-2 sm:order-1">
             <i className="ri-information-line mr-1"></i>
             Press <kbd className="px-1 py-0.5 border border-gray-200 rounded text-xs font-mono dark:border-gray-700">Enter</kbd> to send
           </p>
           
           <Button 
-            className="gap-2 py-4 px-6"
+            className="gap-2 py-3 px-4 sm:py-4 sm:px-6 w-full sm:w-auto order-1 sm:order-2"
             onClick={handleSendMessage}
             disabled={isPending || !currentMessage.trim()}
           >
-            <span>{isPending ? "Sending..." : "Send Message"}</span>
+            <span>{isPending ? "Sending..." : "Send"}</span>
             <i className={`${isPending ? "ri-loader-4-line animate-spin" : "ri-send-plane-fill"}`}></i>
           </Button>
         </div>
