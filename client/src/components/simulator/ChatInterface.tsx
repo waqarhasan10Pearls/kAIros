@@ -116,7 +116,7 @@ const ChatInterface = ({ selectedEvent }: ChatInterfaceProps) => {
                   `}
                 >
                   {/* Message sender label */}
-                  <div className="text-xs text-gray-500 font-medium mb-1 dark:text-gray-400">
+                  <div className={`text-xs font-medium mb-1 ${message.type === 'user' ? 'text-white/90' : 'text-gray-700 dark:text-gray-300'}`}>
                     {message.type === 'user' ? 'You (Scrum Master)' : 'Team Member'}
                   </div>
                   
@@ -174,7 +174,7 @@ const ChatInterface = ({ selectedEvent }: ChatInterfaceProps) => {
                   <i className="ri-team-line"></i>
                 </div>
                 <div className="bg-white text-gray-800 rounded-lg rounded-tl-none px-4 py-3 shadow-sm border border-gray-100 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-700">
-                  <div className="text-xs text-gray-500 font-medium mb-1 dark:text-gray-400">
+                  <div className="text-xs text-gray-700 font-medium mb-1 dark:text-gray-300">
                     Team Member
                   </div>
                   <div className="flex space-x-2">

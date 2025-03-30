@@ -90,7 +90,7 @@ const SimulationInfo = ({ selectedEvent }: SimulationInfoProps) => {
           </div>
           <h3 className="text-lg font-bold text-gray-900 dark:text-white">{eventTitles[selectedEvent]}</h3>
         </div>
-        <Badge variant="outline" className="mt-2 sm:mt-0 py-1 px-3 font-medium border-primary/20 dark:border-primary/40">
+        <Badge variant="outline" className="mt-2 sm:mt-0 py-1.5 px-4 font-medium border-primary/30 bg-primary/5 text-primary dark:border-primary/50 dark:bg-primary/10 dark:text-primary-foreground">
           <i className="ri-time-line mr-1.5"></i>
           Timebox: {eventTimeboxes[selectedEvent]}
         </Badge>
