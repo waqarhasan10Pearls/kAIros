@@ -141,13 +141,13 @@ const ChatInterface = ({ selectedEvent }: ChatInterfaceProps) => {
           onKeyDown={handleKeyDown}
         ></textarea>
         <button 
-          className="bg-primary text-white px-3 sm:px-4 rounded-r-md hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 min-w-[80px] sm:min-w-[100px]"
+          className="bg-primary text-white px-4 rounded-r-md hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 min-w-[100px]"
           onClick={handleSendMessage}
           disabled={isPending || !currentMessage.trim()}
           aria-label="Send message"
           title="Send your message"
         >
-          <span className="hidden sm:inline">Send</span>
+          <span>Send</span>
           <i className="ri-send-plane-fill"></i>
         </button>
       </div>
