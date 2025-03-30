@@ -45,8 +45,8 @@ const ScrumEventSelector = ({ selectedEvent, setSelectedEvent }: ScrumEventSelec
             }`}
             onClick={() => setSelectedEvent(event.type)}
           >
-            <h3 className={`font-medium ${selectedEvent === event.type ? "text-primary" : ""}`}>{event.title}</h3>
-            <p className="text-xs text-gray-500">{event.description}</p>
+            <h3 className={`text-lg font-semibold mb-1 ${selectedEvent === event.type ? "text-primary" : "text-gray-800"}`}>{event.title}</h3>
+            <p className="text-sm text-gray-600">{event.description}</p>
           </button>
         ))}
       </div>
