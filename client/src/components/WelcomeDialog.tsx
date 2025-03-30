@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -15,11 +15,12 @@ import KairosLogo from "./KairosLogo";
 interface WelcomeDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  showFeedback?: boolean;
 }
 
-export default function WelcomeDialog({ open, onOpenChange }: WelcomeDialogProps) {
+export default function WelcomeDialog({ open, onOpenChange, showFeedback = false }: WelcomeDialogProps) {
   const [feedback, setFeedback] = useState("");
-  const [showFeedbackForm, setShowFeedbackForm] = useState(false);
+  const [showFeedbackForm, setShowFeedbackForm] = useState(showFeedback);
   const { toast } = useToast();
 
   // Handle feedback submission
@@ -31,97 +32,101 @@ export default function WelcomeDialog({ open, onOpenChange }: WelcomeDialogProps
     });
     setFeedback("");
     setShowFeedbackForm(false);
+    onOpenChange(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[600px]">
-        <DialogHeader>
-          <div className="flex items-center justify-center mb-4">
-            <KairosLogo size={60} className="text-primary mr-3" />
-            <DialogTitle className="text-2xl">Welcome to kAIros</DialogTitle>
-          </div>
-          <DialogDescription>
-            Your AI-powered partner for agile facilitation
-          </DialogDescription>
-        </DialogHeader>
-
         {!showFeedbackForm ? (
-          <div className="space-y-4">
-            <div className="p-4 bg-primary/5 rounded-md border border-primary/20">
-              <h3 className="font-medium text-primary mb-2">What is kAIros?</h3>
-              <p className="text-sm text-gray-700 dark:text-gray-300">
-                kAIros is an AI companion for Scrum Masters and Agile Coaches. Named after the Greek concept of "the opportune moment," 
-                it helps you guide teams through Sprint events with thoughtful prompts, scenarios, and insights exactly when needed.
-              </p>
+          <>
+            <DialogHeader>
+              <div className="flex items-center justify-center mb-4">
+                <KairosLogo size={60} className="text-primary mr-3" />
+                <DialogTitle className="text-2xl">Welcome to kAIros</DialogTitle>
+              </div>
+              <DialogDescription>
+                Your AI-powered partner for agile facilitation
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4">
+              <div className="p-4 bg-primary/5 rounded-md border border-primary/20">
+                <h3 className="font-medium text-primary mb-2">What is kAIros?</h3>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  kAIros is an AI companion for Scrum Masters and Agile Coaches. Named after the Greek concept of "the opportune moment," 
+                  it helps you guide teams through Sprint events with thoughtful prompts, scenarios, and insights exactly when needed.
+                </p>
+              </div>
+
+              <div className="space-y-2">
+                <h3 className="font-medium">Key Features:</h3>
+                <ul className="list-disc list-inside text-sm space-y-1 text-gray-500 dark:text-gray-400">
+                  <li><span className="font-medium text-gray-700 dark:text-gray-300">Team Engagement Tools</span> - Icebreakers and team activities to foster collaboration</li>
+                  <li><span className="font-medium text-gray-700 dark:text-gray-300">Scrum Event Simulator</span> - Practice facilitation across all Sprint events</li>
+                  <li><span className="font-medium text-gray-700 dark:text-gray-300">AI Coaching</span> - Receive guidance based on Scrum Guide 2020 principles</li>
+                </ul>
+              </div>
+
+              <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md border border-blue-100 dark:border-blue-800/30">
+                <p className="text-sm text-blue-700 dark:text-blue-300">
+                  <span className="font-bold">Note:</span> This is an MVP (Minimum Viable Product) version of kAIros. 
+                  We're actively improving it based on user feedback. Thank you for being an early user!
+                </p>
+              </div>
             </div>
 
-            <div className="space-y-2">
-              <h3 className="font-medium">Key Features:</h3>
-              <ul className="list-disc list-inside text-sm space-y-1 text-gray-700 dark:text-gray-300">
-                <li><span className="font-medium">Team Engagement Tools</span> - Icebreakers and team activities to foster collaboration</li>
-                <li><span className="font-medium">Scrum Event Simulator</span> - Practice facilitation across all Sprint events</li>
-                <li><span className="font-medium">AI Coaching</span> - Receive guidance based on Scrum Guide 2020 principles</li>
-              </ul>
-            </div>
-
-            <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md border border-blue-100 dark:border-blue-800/30">
-              <p className="text-sm text-blue-800 dark:text-blue-300">
-                <span className="font-bold">Note:</span> This is an MVP (Minimum Viable Product) version of kAIros. 
-                We're actively improving it based on user feedback. Thank you for being an early user!
-              </p>
-            </div>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            <p className="text-sm text-gray-700 dark:text-gray-300">
-              Your feedback is invaluable in helping us improve kAIros. Please share your thoughts, 
-              suggestions, or any issues you've encountered:
-            </p>
-            <Textarea 
-              value={feedback}
-              onChange={(e) => setFeedback(e.target.value)}
-              placeholder="Share your experience with kAIros..."
-              className="min-h-[100px]"
-            />
-          </div>
-        )}
-
-        <DialogFooter className="flex-col sm:flex-row gap-2">
-          {!showFeedbackForm ? (
-            <>
-              <Button 
-                variant="outline" 
-                onClick={() => setShowFeedbackForm(true)}
-                className="sm:mr-auto"
-              >
-                <i className="ri-feedback-line mr-2"></i>
-                Share Feedback
-              </Button>
+            <DialogFooter className="flex-col sm:flex-row gap-2">
               <Button onClick={() => onOpenChange(false)}>
                 Get Started
                 <i className="ri-arrow-right-line ml-2"></i>
               </Button>
-            </>
-          ) : (
-            <>
+            </DialogFooter>
+          </>
+        ) : (
+          <>
+            <DialogHeader>
+              <DialogTitle className="text-xl">Share Your Feedback</DialogTitle>
+              <DialogDescription>
+                Help us improve kAIros with your thoughts and suggestions
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-4">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Your feedback is invaluable in helping us improve kAIros. Please share your thoughts, 
+                suggestions, or any issues you've encountered:
+              </p>
+              <Textarea 
+                value={feedback}
+                onChange={(e) => setFeedback(e.target.value)}
+                placeholder="Share your experience with kAIros..."
+                className="min-h-[150px]"
+              />
+            </div>
+
+            <DialogFooter className="flex-col sm:flex-row gap-2">
               <Button 
                 variant="outline" 
-                onClick={() => setShowFeedbackForm(false)}
+                onClick={() => {
+                  setShowFeedbackForm(false);
+                  onOpenChange(false);
+                }}
                 className="sm:mr-auto"
               >
-                <i className="ri-arrow-left-line mr-2"></i>
-                Back
+                <i className="ri-close-line mr-2"></i>
+                Cancel
               </Button>
               <Button 
                 onClick={handleSubmitFeedback}
                 disabled={!feedback.trim()}
               >
+                <i className="ri-send-plane-line mr-2"></i>
                 Submit Feedback
               </Button>
-            </>
-          )}
-        </DialogFooter>
+            </DialogFooter>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );

@@ -12,6 +12,7 @@ type TabType = "icebreaker" | "simulator";
 function App() {
   const [activeTab, setActiveTab] = useState<TabType>("icebreaker");
   const [showWelcome, setShowWelcome] = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
 
   // Check if this is the first visit
   useEffect(() => {
@@ -38,13 +39,23 @@ function App() {
           onOpenChange={setShowWelcome} 
         />
         
+        {/* Feedback Dialog */}
+        <WelcomeDialog 
+          open={showFeedback} 
+          onOpenChange={setShowFeedback}
+          showFeedback={true}
+        />
+        
         {/* Floating feedback button */}
         <button
-          onClick={() => setShowWelcome(true)}
-          className="fixed bottom-6 right-6 bg-primary text-white p-3 rounded-full shadow-lg hover:bg-primary/90 transition-colors z-50 flex items-center justify-center"
+          onClick={() => setShowFeedback(true)}
+          className="fixed bottom-6 right-6 bg-primary text-white p-3 rounded-full shadow-lg hover:bg-primary/90 transition-colors z-50 flex items-center justify-center group"
           aria-label="Open feedback form"
         >
           <i className="ri-feedback-line text-xl"></i>
+          <span className="absolute right-full mr-2 bg-gray-900 text-white text-xs py-1 px-2 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+            Share Feedback
+          </span>
         </button>
         
         {/* Tab Navigation */}
