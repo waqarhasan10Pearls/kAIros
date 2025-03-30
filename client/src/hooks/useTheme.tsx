@@ -13,34 +13,43 @@ const defaultThemeContext: ThemeContextType = {
 
 const ThemeContext = createContext<ThemeContextType>(defaultThemeContext);
 
-export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  // Initialize dark mode from localStorage or system preference
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    // Check localStorage first
-    const savedTheme = localStorage.getItem('kairosTheme');
-    if (savedTheme) {
-      return savedTheme === 'dark';
-    }
-    // If no saved preference, check system preference
-    return window.matchMedia('(prefers-color-scheme: dark)').matches;
-  });
+// Helper function to directly apply theme to document
+const applyTheme = (isDark: boolean) => {
+  if (isDark) {
+    document.documentElement.classList.add("dark");
+  } else {
+    document.documentElement.classList.remove("dark");
+  }
+};
 
-  // Apply theme class on initial render and when theme changes
+export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
+  // Check system preference first
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  
+  // Then check localStorage
+  const savedTheme = localStorage.getItem('theme');
+  const initialDarkMode = savedTheme 
+    ? savedTheme === 'dark'
+    : prefersDark;
+  
+  // Set initial state
+  const [isDarkMode, setIsDarkMode] = useState(initialDarkMode);
+  
+  // Apply theme immediately
   useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
+    // Apply the theme on initial load
+    applyTheme(initialDarkMode);
+  }, [initialDarkMode]);
+  
+  // Handle theme changes
+  useEffect(() => {
+    applyTheme(isDarkMode);
+    // Save to localStorage
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
   }, [isDarkMode]);
 
   const toggleTheme = () => {
-    setIsDarkMode(prev => {
-      const newTheme = !prev;
-      // Save to localStorage
-      localStorage.setItem('kairosTheme', newTheme ? 'dark' : 'light');
-      return newTheme;
-    });
+    setIsDarkMode(prevMode => !prevMode);
   };
 
   return (

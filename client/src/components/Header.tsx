@@ -21,14 +21,20 @@ const Header = () => {
           </div>
           <div className="flex items-center space-x-4">
             <button
-              className="p-2 rounded-full bg-gray-100 text-gray-600 hover:bg-primary/10 hover:text-primary transition-colors dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
+              className="px-3 py-2 rounded-lg flex items-center gap-2 font-medium text-sm bg-gray-100 text-gray-700 hover:bg-primary/10 hover:text-primary transition-colors dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600"
               onClick={toggleTheme}
               aria-label="Toggle dark mode"
             >
               {isDarkMode ? (
-                <i className="ri-sun-line text-xl"></i>
+                <>
+                  <i className="ri-sun-line text-lg"></i>
+                  <span>Light Mode</span>
+                </>
               ) : (
-                <i className="ri-moon-line text-xl"></i>
+                <>
+                  <i className="ri-moon-line text-lg"></i>
+                  <span>Dark Mode</span>
+                </>
               )}
             </button>
           </div>
