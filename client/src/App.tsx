@@ -1,15 +1,26 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Toaster } from "./components/ui/toaster";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import IcebreakerTab from "./components/icebreaker/IcebreakerTab";
 import SimulatorTab from "./components/simulator/SimulatorTab";
 import KairosLogo from "./components/KairosLogo";
+import WelcomeDialog from "./components/WelcomeDialog";
 
 type TabType = "icebreaker" | "simulator";
 
 function App() {
   const [activeTab, setActiveTab] = useState<TabType>("icebreaker");
+  const [showWelcome, setShowWelcome] = useState(false);
+
+  // Check if this is the first visit
+  useEffect(() => {
+    const hasVisitedBefore = localStorage.getItem("kairosHasVisited");
+    if (!hasVisitedBefore) {
+      setShowWelcome(true);
+      localStorage.setItem("kairosHasVisited", "true");
+    }
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-white to-primary/5 dark:from-gray-950 dark:to-gray-900">
@@ -20,6 +31,21 @@ function App() {
         <div className="absolute top-40 right-10 opacity-5 hidden lg:block">
           <KairosLogo size={200} className="text-primary" />
         </div>
+        
+        {/* Welcome Dialog */}
+        <WelcomeDialog 
+          open={showWelcome} 
+          onOpenChange={setShowWelcome} 
+        />
+        
+        {/* Floating feedback button */}
+        <button
+          onClick={() => setShowWelcome(true)}
+          className="fixed bottom-6 right-6 bg-primary text-white p-3 rounded-full shadow-lg hover:bg-primary/90 transition-colors z-50 flex items-center justify-center"
+          aria-label="Open feedback form"
+        >
+          <i className="ri-feedback-line text-xl"></i>
+        </button>
         
         {/* Tab Navigation */}
         <div className="relative z-10 mb-8 mx-auto max-w-2xl">
