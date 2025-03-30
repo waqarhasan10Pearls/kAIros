@@ -41,6 +41,133 @@ const startScenarioSchema = z.object({
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
+  
+  // Icebreaker Activity Generator endpoint
+  app.post("/api/icebreaker-activity", async (req: Request, res: Response) => {
+    try {
+      const { vibe } = icebreakerSchema.parse(req.body);
+      
+      console.log(`Generating icebreaker activity with vibe: ${vibe}`);
+      
+      // If there's no API key, return a fallback response
+      if (!OPENROUTER_API_KEY) {
+        console.log("No OpenRouter API key available, returning fallback activity");
+        return res.json({
+          title: "Value Mapping Activity",
+          duration: "10-15 minutes",
+          description: "Help the team connect their work to Scrum values and build a stronger team culture.",
+          instructions: [
+            "Write each Scrum value on a different sticky note: Commitment, Focus, Openness, Respect, Courage.", 
+            "Ask everyone to silently reflect on a recent example where they saw a team member demonstrate each value.", 
+            "Have team members share one example, connecting it to a specific value.",
+            "Discuss which values feel strongest and which might need more attention in your team."
+          ]
+        });
+      }
+      
+      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+          "HTTP-Referer": "https://kairos-coach.com"
+        },
+        body: JSON.stringify({
+          model: "anthropic/claude-3-haiku",
+          messages: [
+            {
+              role: "system",
+              content: `You are an expert Scrum Master assistant that generates engaging icebreaker activities that promote Agile principles and Scrum values.
+
+Scrum Values to embody:
+${scrumValues.values.map(value => `- ${value}: ${value}`).join('\n')}
+
+${scrumValues.description}
+
+Scrum Team Structure:
+${scrumTeam.composition}
+${scrumTeam.characteristics.map(char => `- ${char}`).join('\n')}
+`
+            },
+            {
+              role: "user",
+              content: `Generate a ${vibe} icebreaker activity for a Scrum Team meeting. 
+
+The activity should:
+- Take 5-15 minutes to complete
+- Be easy to facilitate with minimal preparation
+- Foster team collaboration and communication
+- Relate to Scrum values or agile principles when possible
+- ${
+  vibe === "funny" ? "Be lighthearted and humorous" : 
+  vibe === "deep" ? "Encourage meaningful reflection" : 
+  vibe === "creative" ? "Involve creative thinking or problem-solving" : 
+  vibe === "teambuilding" ? "Focus on strengthening team relationships" : 
+  vibe === "technical" ? "Incorporate technical concepts in an engaging way" : 
+  vibe === "reflection" ? "Promote thoughtful team or individual reflection" : 
+  vibe === "energizer" ? "Boost team energy and engagement" : 
+  "Be engaging and inclusive"
+}
+
+Format your response as a JSON object with these fields:
+{
+  "title": "Activity name (concise and engaging)",
+  "duration": "Estimated time (e.g., '5-10 minutes')",
+  "description": "1-2 sentence summary of the activity and its purpose",
+  "instructions": ["Step 1...", "Step 2...", "Step 3..."] (clear, numbered instructions for the facilitator)
+}
+
+Make sure the instructions are specific, actionable, and easy to follow.`
+            }
+          ],
+          max_tokens: 500
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || "Failed to generate icebreaker activity");
+      }
+
+      const data = await response.json();
+      let activity;
+      try {
+        const content = data.choices[0]?.message?.content?.trim() || '';
+        // Extract JSON from the content
+        const jsonMatch = content.match(/\{[\s\S]*\}/);
+        if (jsonMatch) {
+          activity = JSON.parse(jsonMatch[0]);
+        } else {
+          throw new Error("Could not parse JSON from response");
+        }
+      } catch (parseError) {
+        console.error("Error parsing activity JSON:", parseError);
+        // Fallback activity
+        activity = {
+          title: "Agile Values Quick Share",
+          duration: "5-10 minutes",
+          description: "A quick activity to connect team members through shared experiences related to agile values.",
+          instructions: [
+            "Ask each team member to think of a recent moment when they saw an Agile or Scrum value in action.",
+            "Give everyone 1 minute to reflect silently.",
+            "Go around the team and have each person share their example in 30 seconds or less.",
+            "Acknowledge each contribution and highlight connections between examples."
+          ]
+        };
+      }
+
+      return res.json(activity);
+    } catch (error) {
+      console.error("Error generating icebreaker activity:", error);
+      if (error instanceof Error) {
+        console.error("Error details:", error.message, error.stack);
+      }
+      
+      return res.status(500).json({ 
+        message: error instanceof Error ? error.message : "Error generating icebreaker activity"
+      });
+    }
+  });
 
   // Icebreaker Generator endpoint
   app.post("/api/icebreaker", async (req: Request, res: Response) => {

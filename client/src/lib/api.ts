@@ -7,6 +7,12 @@ export const generateIcebreaker = async (vibe: VibeType) => {
   return res.json();
 };
 
+// Team Activity Generator API
+export const generateActivity = async (vibe: VibeType) => {
+  const res = await apiRequest("POST", "/api/icebreaker-activity", { vibe });
+  return res.json();
+};
+
 // Simulation Info API
 export const getSimulationInfo = async (eventType: ScrumEventType) => {
   const res = await apiRequest("GET", `/api/simulation-info?eventType=${eventType}`);

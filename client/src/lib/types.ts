@@ -5,6 +5,13 @@ export interface IcebreakerQuestion {
   question: string;
 }
 
+export interface IcebreakerActivity {
+  title: string;
+  duration: string;
+  description: string;
+  instructions: string[];
+}
+
 // Scrum Simulator Types
 export type ScrumEventType = "daily" | "planning" | "review" | "retro";
 
