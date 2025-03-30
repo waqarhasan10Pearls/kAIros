@@ -503,6 +503,24 @@ Additional requirements:
       });
     }
   });
+  
+  // Reset messages for a specific event
+  app.post("/api/reset-messages", async (req: Request, res: Response) => {
+    try {
+      const eventType = req.query.eventType as string;
+      if (!["daily", "planning", "review", "retro"].includes(eventType)) {
+        return res.status(400).json({ message: "Invalid event type" });
+      }
+      
+      await storage.resetEventMessages(eventType);
+      return res.json({ success: true, message: `Messages for ${eventType} event have been reset` });
+    } catch (error) {
+      console.error("Error resetting messages:", error);
+      return res.status(500).json({ 
+        message: error instanceof Error ? error.message : "Error resetting messages"
+      });
+    }
+  });
 
   return httpServer;
 }

@@ -38,12 +38,9 @@ const VibeSelector = ({ selectedVibe, setSelectedVibe }: VibeSelectorProps) => {
             <div className="flex flex-col items-center">
               <i className={`${vibe.icon} text-xl ${selectedVibe === vibe.type ? "animate-pulse" : ""}`}></i>
               <span className="mt-1">{vibe.label}</span>
-            </div>
-            
-            <div className={`absolute inset-x-0 -bottom-10 z-10 px-2 py-1 rounded bg-gray-800 text-xs text-white opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none ${
-              selectedVibe === vibe.type ? "bg-primary" : ""
-            }`}>
-              {vibe.description}
+              {selectedVibe === vibe.type && (
+                <span className="text-xs mt-1 opacity-80">{vibe.description}</span>
+              )}
             </div>
           </button>
         ))}

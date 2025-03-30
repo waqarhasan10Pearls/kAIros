@@ -1,12 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
 import ScrumEventSelector from "./ScrumEventSelector";
 import SimulationInfo from "./SimulationInfo";
 import ChatInterface from "./ChatInterface";
 import ScenarioSelector from "./ScenarioSelector";
 import { ScrumEventType } from "../../lib/types";
+import { queryClient } from "../../lib/queryClient";
+import { resetEventMessages as resetEventMessagesApi } from "../../lib/api";
 
 const SimulatorTab = () => {
   const [selectedEvent, setSelectedEvent] = useState<ScrumEventType>("planning");
+  
+  // Define a mutation to reset messages when event changes
+  const { mutate: resetEventMessages } = useMutation({
+    mutationFn: async (eventType: ScrumEventType) => {
+      return resetEventMessagesApi(eventType);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/messages', selectedEvent] });
+    }
+  });
+  
+  // Reset messages when event changes
+  useEffect(() => {
+    resetEventMessages(selectedEvent);
+  }, [selectedEvent, resetEventMessages]);
 
   return (
     <div className="p-6 space-y-6">

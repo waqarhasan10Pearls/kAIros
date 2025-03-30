@@ -30,6 +30,12 @@ export const sendMessage = async (eventType: ScrumEventType, content: string) =>
   return res.json();
 };
 
+export const resetEventMessages = async (eventType: ScrumEventType) => {
+  const res = await apiRequest("POST", `/api/reset-messages?eventType=${eventType}`);
+  return res.json();
+};
+
+
 // Scenario Challenge APIs
 export const getScenarioChallenges = async (eventType: ScrumEventType) => {
   const res = await apiRequest("GET", `/api/scenario-challenges?eventType=${eventType}`);

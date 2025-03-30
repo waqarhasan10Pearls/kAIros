@@ -17,6 +17,7 @@ export interface IStorage {
   addMessage(message: InsertMessage): Promise<Message>;
   getScenarioChallenges(eventType: string): Promise<ScenarioChallenge[]>;
   startScenario(eventType: string, scenarioType: ScenarioType, scenarioId?: string, customScenario?: string): Promise<SimulationInfo>;
+  resetEventMessages(eventType: string): Promise<void>;
 }
 
 export class MemStorage implements IStorage {
@@ -213,7 +214,7 @@ export class MemStorage implements IStorage {
 
   private getScenarioWelcomeMessage(
     eventType: string, 
-    scenarioType: ScenarioType, 
+    scenarioType: ScenarioType | string, 
     simulationInfo: SimulationInfo
   ): string {
     if (scenarioType === 'predefined' && simulationInfo.scenarioChallenge) {
@@ -230,6 +231,36 @@ export class MemStorage implements IStorage {
       return `Welcome to your custom scenario for the ${eventType} Scrum event. Here's the situation you've described:\n\n${simulationInfo.customScenario}\n\nYou are the Scrum Master in this scenario. How would you approach this situation? I'll act as your AI coach, offering guidance and simulating team responses as needed.`;
     } else {
       return this.getWelcomeMessage(eventType);
+    }
+  }
+  
+  async resetEventMessages(eventType: string): Promise<void> {
+    try {
+      // Get the current simulation info
+      const simulationInfo = await this.getSimulationInfo(eventType);
+      
+      // Create a new welcome message based on current simulation state
+      const welcomeMessage: Message = {
+        id: this.messageCurrentId++,
+        eventType,
+        type: "ai",
+        content: simulationInfo.scenarioType 
+          ? this.getScenarioWelcomeMessage(
+              eventType, 
+              simulationInfo.scenarioType as ScenarioType, 
+              simulationInfo
+            )
+          : this.getWelcomeMessage(eventType),
+        timestamp: new Date()
+      };
+      
+      // Reset the event messages to just the welcome message
+      this.messages.set(eventType, [welcomeMessage]);
+      
+      console.log(`Reset messages for ${eventType} event`);
+    } catch (error) {
+      console.error(`Error resetting messages for ${eventType} event:`, error);
+      throw error;
     }
   }
 }
