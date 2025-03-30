@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import IcebreakerTab from "./components/icebreaker/IcebreakerTab";
 import SimulatorTab from "./components/simulator/SimulatorTab";
+import KairosLogo from "./components/KairosLogo";
 
 type TabType = "icebreaker" | "simulator";
 
@@ -11,37 +12,44 @@ function App() {
   const [activeTab, setActiveTab] = useState<TabType>("icebreaker");
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-white to-primary/5 dark:from-gray-950 dark:to-gray-900">
       <Header />
 
       <main className="flex-grow container mx-auto px-4 py-8">
+        {/* Decorative element */}
+        <div className="absolute top-40 right-10 opacity-5 hidden lg:block">
+          <KairosLogo size={200} className="text-primary" />
+        </div>
+        
         {/* Tab Navigation */}
-        <div className="mb-6 border-b border-gray-200">
-          <nav className="flex -mb-px">
+        <div className="relative z-10 mb-8 mx-auto max-w-2xl">
+          <nav className="flex p-1 bg-white/80 backdrop-blur-sm rounded-xl shadow-sm dark:bg-gray-800/50">
             <button
-              className={`px-4 py-2 border-b-2 font-medium text-sm sm:text-base ${
+              className={`flex-1 px-4 py-3 rounded-lg font-medium flex items-center justify-center transition-all duration-200 ${
                 activeTab === "icebreaker"
-                  ? "text-primary border-primary"
-                  : "text-gray-500 hover:text-gray-700 border-transparent"
+                  ? "bg-primary text-white shadow-md"
+                  : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700/50"
               }`}
               onClick={() => setActiveTab("icebreaker")}
             >
-              <i className="ri-chat-1-line mr-1"></i> Icebreaker Generator
+              <i className={`ri-chat-1-line mr-2 ${activeTab === "icebreaker" ? "animate-pulse" : ""}`}></i> 
+              Team Engagement
             </button>
             <button
-              className={`px-4 py-2 border-b-2 font-medium text-sm sm:text-base ${
+              className={`flex-1 px-4 py-3 rounded-lg font-medium flex items-center justify-center transition-all duration-200 ${
                 activeTab === "simulator"
-                  ? "text-primary border-primary"
-                  : "text-gray-500 hover:text-gray-700 border-transparent"
+                  ? "bg-primary text-white shadow-md"
+                  : "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700/50"
               }`}
               onClick={() => setActiveTab("simulator")}
             >
-              <i className="ri-group-line mr-1"></i> Scrum Simulator
+              <i className={`ri-group-line mr-2 ${activeTab === "simulator" ? "animate-pulse" : ""}`}></i> 
+              Scrum Simulator
             </button>
           </nav>
         </div>
 
-        <div className="bg-white rounded-lg shadow overflow-hidden">
+        <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-md overflow-hidden border border-gray-100 transition-all duration-300 dark:bg-gray-800/80 dark:border-gray-700">
           {activeTab === "icebreaker" ? <IcebreakerTab /> : <SimulatorTab />}
         </div>
       </main>

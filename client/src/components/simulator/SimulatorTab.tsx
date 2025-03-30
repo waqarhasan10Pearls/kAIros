@@ -9,35 +9,84 @@ const SimulatorTab = () => {
   const [selectedEvent, setSelectedEvent] = useState<ScrumEventType>("planning");
 
   return (
-    <div>
-      <div className="border-b border-gray-200 p-6">
-        <h2 className="text-2xl font-bold text-gray-900 mb-2">kAIros Scrum Simulator</h2>
-        <div className="space-y-4">
-          <p className="text-gray-600">Master the art of Scrum facilitation with our AI-powered coaching platform. kAIros helps Scrum Masters practice and refine their skills through interactive simulations of key Scrum events.</p>
-          
-          <div className="bg-blue-50 p-4 rounded-lg">
-            <h3 className="text-lg font-semibold text-blue-900 mb-2">Why use kAIros?</h3>
-            <ul className="list-disc list-inside text-blue-800 space-y-1">
-              <li>Practice facilitating Daily Scrums, Planning, Reviews, and Retrospectives</li>
-              <li>Receive real-time feedback from our AI coach</li>
-              <li>Learn to handle challenging scenarios and team dynamics</li>
-              <li>Improve your skills in a risk-free environment</li>
-            </ul>
-          </div>
-          
-          <p className="text-sm text-gray-500">Select a Scrum event below to begin your simulation:</p>
+    <div className="p-6 space-y-6">
+      <div className="text-center mb-8">
+        <div className="inline-flex items-center justify-center p-1 mb-4 bg-primary/10 rounded-full dark:bg-primary/20">
+          <span className="px-3 py-1 text-xs font-medium text-primary rounded-full">
+            AI-Powered Practice
+          </span>
         </div>
-        
-        <ScrumEventSelector 
-          selectedEvent={selectedEvent} 
-          setSelectedEvent={setSelectedEvent} 
-        />
-        
-        <ScenarioSelector selectedEvent={selectedEvent} />
+        <h2 className="text-3xl font-bold mb-3 text-gray-900 dark:text-white">
+          Scrum Event Simulator
+        </h2>
+        <p className="text-gray-600 max-w-2xl mx-auto dark:text-gray-300">
+          Master facilitation by practicing with an AI coach that responds like a real team. Handle challenges at the moment they matter.
+        </p>
       </div>
 
-      <SimulationInfo selectedEvent={selectedEvent} />
-      <ChatInterface selectedEvent={selectedEvent} />
+      <div className="max-w-4xl mx-auto bg-white/80 backdrop-blur-sm rounded-xl shadow-sm border border-gray-100 overflow-hidden dark:bg-gray-800/50 dark:border-gray-700">
+        <div className="p-6 border-b border-gray-200 space-y-5 dark:border-gray-700">
+          <div className="grid md:grid-cols-2 gap-6">
+            <div>
+              <h3 className="text-lg font-medium text-gray-800 mb-3 flex items-center dark:text-white">
+                <i className="ri-calendar-event-line mr-2 text-primary"></i>
+                Select Scrum Event
+              </h3>
+              <p className="text-sm text-gray-500 mb-4 dark:text-gray-400">
+                Choose which Scrum event you want to practice facilitating:
+              </p>
+              
+              <ScrumEventSelector 
+                selectedEvent={selectedEvent} 
+                setSelectedEvent={setSelectedEvent} 
+              />
+            </div>
+            
+            <div className="bg-gradient-to-r from-primary/10 to-transparent p-5 rounded-xl dark:from-primary/20">
+              <h3 className="text-lg font-medium text-gray-800 mb-3 flex items-center dark:text-white">
+                <i className="ri-award-line mr-2 text-primary"></i>
+                Why Use the Simulator?
+              </h3>
+              <ul className="space-y-2 text-gray-600 dark:text-gray-300">
+                <li className="flex items-start">
+                  <i className="ri-check-line text-green-500 mt-1 mr-2"></i>
+                  <span>Practice facilitating all Scrum events with realistic team responses</span>
+                </li>
+                <li className="flex items-start">
+                  <i className="ri-check-line text-green-500 mt-1 mr-2"></i>
+                  <span>Learn to handle difficult scenarios and team dynamics</span>
+                </li>
+                <li className="flex items-start">
+                  <i className="ri-check-line text-green-500 mt-1 mr-2"></i>
+                  <span>Get coaching aligned with Scrum Guide principles</span>
+                </li>
+                <li className="flex items-start">
+                  <i className="ri-check-line text-green-500 mt-1 mr-2"></i>
+                  <span>Build confidence in a risk-free environment</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="pt-4 border-t border-gray-100 dark:border-gray-700">
+            <h3 className="text-lg font-medium text-gray-800 mb-3 flex items-center dark:text-white">
+              <i className="ri-file-list-3-line mr-2 text-primary"></i>
+              Select Scenario Challenge
+            </h3>
+            <p className="text-sm text-gray-500 mb-4 dark:text-gray-400">
+              Choose a scenario to practice, from beginner to advanced challenges:
+            </p>
+            
+            <ScenarioSelector selectedEvent={selectedEvent} />
+          </div>
+        </div>
+
+        <div className="border-b border-gray-200 dark:border-gray-700">
+          <SimulationInfo selectedEvent={selectedEvent} />
+        </div>
+        
+        <ChatInterface selectedEvent={selectedEvent} />
+      </div>
     </div>
   );
 };
