@@ -73,9 +73,13 @@ const ActivityDisplay = ({ selectedVibe }: ActivityDisplayProps) => {
           <div className="px-6 py-4">
             <h4 className="text-md font-medium text-gray-700 mb-3">Instructions:</h4>
             <ol className="list-decimal pl-6 space-y-2">
-              {activity.instructions.map((instruction, index) => (
-                <li key={index} className="text-gray-600">{instruction}</li>
-              ))}
+              {activity.instructions.map((instruction, index) => {
+                // Remove any leading numbers (like "1. " or "1.") from the instruction
+                const cleanInstruction = instruction.replace(/^\d+\.\s*/, '');
+                return (
+                  <li key={index} className="text-gray-600">{cleanInstruction}</li>
+                );
+              })}
             </ol>
           </div>
           <div className="bg-gray-50 px-6 py-3 border-t border-gray-200">
