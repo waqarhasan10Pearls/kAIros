@@ -13,19 +13,29 @@ const CirclePrompt = ({ selectedVibe }: CirclePromptProps) => {
   const [copied, setCopied] = useState(false);
   const { toast } = useToast();
   
-  const { mutate, isPending, error } = useMutation({
-    mutationFn: (vibe: VibeType) => generateIcebreaker(vibe),
+  // Enhance the mutate function to use timestamp for cache busting
+  const { mutate: originalMutate, isPending, error } = useMutation({
+    mutationFn: (params: { vibe: VibeType, timestamp?: number }) => 
+      generateIcebreaker(params.vibe, params.timestamp),
     onSuccess: (data) => {
       setQuestion(data.question);
     },
   });
+  
+  // Wrapper to add timestamp automatically
+  const mutate = (vibe: VibeType) => {
+    originalMutate({ 
+      vibe, 
+      timestamp: new Date().getTime() 
+    });
+  };
 
   // Generate a new question when the vibe changes
   useEffect(() => {
     if (selectedVibe) {
       mutate(selectedVibe);
     }
-  }, [selectedVibe, mutate]);
+  }, [selectedVibe]);
 
   const handleGenerate = () => {
     mutate(selectedVibe);

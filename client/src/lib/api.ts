@@ -2,14 +2,18 @@ import { apiRequest } from "./queryClient";
 import { VibeType, ScrumEventType, ScenarioChallenge } from "./types";
 
 // Icebreaker Generator API
-export const generateIcebreaker = async (vibe: VibeType) => {
-  const res = await apiRequest("POST", "/api/icebreaker", { vibe });
+export const generateIcebreaker = async (vibe: VibeType, timestamp?: number) => {
+  // Add timestamp to prevent caching and ensure fresh results
+  const params = timestamp ? { vibe, _t: timestamp } : { vibe };
+  const res = await apiRequest("POST", "/api/icebreaker", params);
   return res.json();
 };
 
 // Team Activity Generator API
-export const generateActivity = async (vibe: VibeType) => {
-  const res = await apiRequest("POST", "/api/icebreaker-activity", { vibe });
+export const generateActivity = async (vibe: VibeType, timestamp?: number) => {
+  // Add timestamp to prevent caching and ensure fresh results
+  const params = timestamp ? { vibe, _t: timestamp } : { vibe };
+  const res = await apiRequest("POST", "/api/icebreaker-activity", params);
   return res.json();
 };
 

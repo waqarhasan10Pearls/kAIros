@@ -16,16 +16,19 @@ const ActivityDisplay = ({ selectedVibe }: ActivityDisplayProps) => {
   // Generate a new activity when the vibe changes
   useEffect(() => {
     if (selectedVibe) {
-      generateActivity();
+      generateActivityWithTimestamp();
     }
   }, [selectedVibe]);
 
-  const generateActivity = async () => {
+  // Add timestamp to ensure we get fresh content
+  const generateActivityWithTimestamp = async () => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const data = await generateActivityApi(selectedVibe);
+      // Add cache-busting timestamp
+      const timestamp = new Date().getTime();
+      const data = await generateActivityApi(selectedVibe, timestamp);
       setActivity(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unexpected error occurred');
@@ -40,6 +43,9 @@ const ActivityDisplay = ({ selectedVibe }: ActivityDisplayProps) => {
       setIsLoading(false);
     }
   };
+  
+  // For compatibility with existing code
+  const generateActivity = generateActivityWithTimestamp;
 
   const handleCopyActivity = () => {
     if (!activity) return;
