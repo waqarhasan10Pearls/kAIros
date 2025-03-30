@@ -10,72 +10,61 @@ const ScrumEventSelector = ({ selectedEvent, setSelectedEvent }: ScrumEventSelec
     { 
       type: "daily" as ScrumEventType, 
       title: "Daily Scrum", 
-      description: "Inspect progress toward the Sprint Goal",
-      icon: "ri-time-line"
+      description: "Inspect progress toward the Sprint Goal"
     },
     { 
       type: "planning" as ScrumEventType, 
       title: "Sprint Planning", 
-      description: "Lay out the work to be performed in the Sprint",
-      icon: "ri-calendar-check-line"
+      description: "Lay out the work to be performed in the Sprint"
     },
     { 
       type: "review" as ScrumEventType, 
       title: "Sprint Review", 
-      description: "Inspect the outcome of the Sprint",
-      icon: "ri-presentation-line"
+      description: "Inspect the outcome of the Sprint"
     },
     { 
       type: "retro" as ScrumEventType, 
       title: "Sprint Retrospective", 
-      description: "Plan ways to increase quality and effectiveness",
-      icon: "ri-loop-left-line"
+      description: "Plan ways to increase quality and effectiveness"
     },
   ];
 
+  // Simple table-based layout for reliability
   return (
-    <div className="flex flex-wrap gap-4">
-      {events.map((event) => (
-        <button
-          key={event.type}
-          className={`w-full sm:w-[calc(50%-0.5rem)] lg:w-[calc(25%-0.75rem)] h-[200px] p-4 rounded-lg text-left transition-all duration-200 flex flex-col ${
-            selectedEvent === event.type 
-              ? "bg-gradient-to-br from-primary/20 to-primary/5 ring-1 ring-primary/30 shadow-md dark:bg-gradient-to-br dark:from-primary/30 dark:to-primary/10 dark:ring-primary/40" 
-              : "bg-white border border-gray-200 hover:border-primary/30 hover:bg-primary/5 dark:bg-gray-800 dark:border-gray-700 dark:hover:border-primary/40 dark:hover:bg-primary/10"
-          }`}
-          onClick={() => setSelectedEvent(event.type)}
-        >
-          {/* Icon */}
-          <div className="flex mb-2">
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-              selectedEvent === event.type 
-                ? "bg-primary text-white" 
-                : "bg-gray-100 text-gray-500 group-hover:bg-primary/10 group-hover:text-primary/80 dark:bg-gray-700 dark:text-gray-400"
-            }`}>
-              <i className={`${event.icon} text-lg`}></i>
-            </div>
-          </div>
-          
-          {/* Title */}
-          <h3 className={`text-lg font-semibold mb-2 ${
-            selectedEvent === event.type 
-              ? "text-primary" 
-              : "text-gray-800 group-hover:text-primary/80 dark:text-gray-200"
-          }`}>
-            {event.title}
-            {selectedEvent === event.type && (
-              <span className="ml-2 text-xs font-medium text-primary inline-flex items-center">
-                <i className="ri-check-line mr-1"></i> Selected
-              </span>
-            )}
-          </h3>
-          
-          {/* Description */}
-          <div className="text-sm text-gray-600 dark:text-gray-400">
-            {event.description}
-          </div>
-        </button>
-      ))}
+    <div className="w-full overflow-hidden rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
+      <table className="w-full table-fixed">
+        <tbody>
+          {events.map((event) => (
+            <tr 
+              key={event.type}
+              onClick={() => setSelectedEvent(event.type)}
+              className={`border-b border-gray-200 dark:border-gray-700 cursor-pointer transition-colors hover:bg-gray-50 dark:hover:bg-gray-700 ${
+                selectedEvent === event.type ? "bg-primary/10 dark:bg-primary/20" : ""
+              }`}
+            >
+              <td className="w-1/4 p-4 text-center">
+                <div className="flex justify-center">
+                  <div className={`inline-flex items-center justify-center ${
+                    selectedEvent === event.type ? "text-primary font-semibold" : "text-gray-700 dark:text-gray-300"
+                  }`}>
+                    {event.title}
+                    {selectedEvent === event.type && (
+                      <span className="ml-2 text-xs bg-primary/20 text-primary px-2 py-1 rounded-full">
+                        Selected
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </td>
+              <td className="w-3/4 p-4 border-l border-gray-200 dark:border-gray-700">
+                <div className="text-sm text-gray-600 dark:text-gray-400">
+                  {event.description}
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
