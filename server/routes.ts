@@ -11,7 +11,7 @@ console.log("OpenRouter API Key available:", !!OPENROUTER_API_KEY);
 
 // Validate icebreaker request body
 const icebreakerSchema = z.object({
-  vibe: z.enum(["random", "funny", "deep", "creative"])
+  vibe: z.enum(["random", "funny", "deep", "creative", "teambuilding", "technical", "reflection", "energizer"])
 });
 
 // Validate message request body
@@ -88,7 +88,16 @@ ${scrumTeam.characteristics.map(char => `- ${char}`).join('\n')}
 - Designed to foster transparency, inspection, and adaptation
 - Supportive of building cross-functional collaboration and self-management
 - Aligned with Scrum values (commitment, courage, focus, openness, respect)
-- ${vibe === "funny" ? "Lighthearted and humorous" : vibe === "deep" ? "Reflective and meaningful" : vibe === "creative" ? "Imaginative and innovative" : "Balanced and engaging"}
+- ${
+  vibe === "funny" ? "Lighthearted and humorous" : 
+  vibe === "deep" ? "Reflective and meaningful" : 
+  vibe === "creative" ? "Imaginative and innovative" : 
+  vibe === "teambuilding" ? "Focused on team cohesion and collaboration" : 
+  vibe === "technical" ? "Related to development practices and technical excellence" : 
+  vibe === "reflection" ? "Encouraging thoughtful reflection on processes and practices" : 
+  vibe === "energizer" ? "Energizing and momentum-building" : 
+  "Balanced and engaging"
+}
 
 Reply with ONLY the question text.`
             }

@@ -1,5 +1,5 @@
 // Icebreaker Types
-export type VibeType = "random" | "funny" | "deep" | "creative";
+export type VibeType = "random" | "funny" | "deep" | "creative" | "teambuilding" | "technical" | "reflection" | "energizer";
 
 export interface IcebreakerQuestion {
   question: string;
