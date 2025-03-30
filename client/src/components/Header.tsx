@@ -12,7 +12,7 @@ const Header = () => {
               <i className="ri-timer-flash-line mr-2"></i>
               kAIros
             </h1>
-            <p className="text-sm text-gray-500">Your AI Scrum Master Coach - Practice and Master Agile Facilitation</p>
+            <p className="text-sm text-gray-500">Your AI Tour Guide for your Agile Journey - Practice and Master Team Facilitation & Coaching</p>
           </div>
           <div className="flex items-center space-x-4">
             <button
