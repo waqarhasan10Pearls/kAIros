@@ -38,38 +38,40 @@ const ScrumEventSelector = ({ selectedEvent, setSelectedEvent }: ScrumEventSelec
       {events.map((event) => (
         <button
           key={event.type}
-          className={`group relative p-4 rounded-lg text-left transition-all duration-200 overflow-hidden ${
+          className={`group relative px-4 py-5 rounded-lg text-left transition-all duration-200 h-full flex flex-col ${
             selectedEvent === event.type 
               ? "bg-gradient-to-br from-primary/20 to-primary/5 ring-1 ring-primary/30 shadow-md dark:bg-gradient-to-br dark:from-primary/30 dark:to-primary/10 dark:ring-primary/40" 
               : "bg-white border border-gray-200 hover:border-primary/30 hover:bg-primary/5 dark:bg-gray-800 dark:border-gray-700 dark:hover:border-primary/40 dark:hover:bg-primary/10"
           }`}
           onClick={() => setSelectedEvent(event.type)}
         >
-          <div className="flex items-center mb-2">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-2 ${
-              selectedEvent === event.type 
-                ? "bg-primary text-white" 
-                : "bg-gray-100 text-gray-500 group-hover:bg-primary/10 group-hover:text-primary/80 dark:bg-gray-700 dark:text-gray-400"
-            }`}>
-              <i className={`${event.icon}`}></i>
+          <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-2 flex-shrink-0 ${
+                selectedEvent === event.type 
+                  ? "bg-primary text-white" 
+                  : "bg-gray-100 text-gray-500 group-hover:bg-primary/10 group-hover:text-primary/80 dark:bg-gray-700 dark:text-gray-400"
+              }`}>
+                <i className={`${event.icon}`}></i>
+              </div>
+              
+              <h3 className={`text-base font-semibold line-clamp-1 ${
+                selectedEvent === event.type 
+                  ? "text-primary" 
+                  : "text-gray-800 group-hover:text-primary/80 dark:text-gray-200"
+              }`}>
+                {event.title}
+              </h3>
             </div>
             
-            <h3 className={`text-base font-semibold ${
-              selectedEvent === event.type 
-                ? "text-primary" 
-                : "text-gray-800 group-hover:text-primary/80 dark:text-gray-200"
-            }`}>
-              {event.title}
-            </h3>
-            
             {selectedEvent === event.type && (
-              <div className="ml-auto text-xs font-medium text-primary flex items-center">
+              <div className="text-xs font-medium text-primary flex items-center ml-2 flex-shrink-0">
                 <i className="ri-check-line mr-1"></i> Selected
               </div>
             )}
           </div>
           
-          <p className="text-sm text-gray-600 pl-10 dark:text-gray-400">{event.description}</p>
+          <p className="text-sm text-gray-600 pl-10 dark:text-gray-400 line-clamp-3">{event.description}</p>
         </button>
       ))}
     </div>
