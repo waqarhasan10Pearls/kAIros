@@ -16,11 +16,16 @@ function App() {
 
   // Check if this is the first visit
   useEffect(() => {
-    const hasVisitedBefore = localStorage.getItem("kairosHasVisited");
-    if (!hasVisitedBefore) {
-      setShowWelcome(true);
-      localStorage.setItem("kairosHasVisited", "true");
-    }
+    // For testing, we'll initially show the welcome dialog
+    // In production, use the localStorage check
+    setShowWelcome(true);
+    
+    // Uncomment for production
+    // const hasVisitedBefore = localStorage.getItem("kairosHasVisited");
+    // if (!hasVisitedBefore) {
+    //   setShowWelcome(true);
+    //   localStorage.setItem("kairosHasVisited", "true");
+    // }
   }, []);
 
   return (
