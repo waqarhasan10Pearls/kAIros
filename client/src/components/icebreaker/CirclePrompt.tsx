@@ -46,7 +46,7 @@ const CirclePrompt = ({ selectedVibe }: CirclePromptProps) => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="relative w-64 h-64 md:w-80 md:h-80 rounded-full flex items-center justify-center bg-gradient-to-br from-primary/90 to-primary text-white shadow-lg mb-8 p-8 text-center overflow-hidden group">
+      <div className="relative w-72 h-72 md:w-80 md:h-80 rounded-full flex items-center justify-center bg-gradient-to-br from-primary/90 to-primary text-white shadow-lg mb-8 text-center group">
         {/* Decorative elements */}
         <div className="absolute top-0 left-0 w-full h-full bg-white/10 rounded-full transform rotate-45 opacity-50"></div>
         <div className="absolute -top-10 -right-10 w-20 h-20 bg-white/10 rounded-full"></div>
@@ -55,7 +55,13 @@ const CirclePrompt = ({ selectedVibe }: CirclePromptProps) => {
         {/* Question or loading state */}
         {!isPending ? (
           <>
-            <div className="font-medium text-lg z-10 transition-all duration-300 group-hover:scale-105">{question}</div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="font-medium text-base sm:text-lg z-10 px-6 py-4 overflow-auto w-full h-full flex items-center justify-center">
+                <div style={{ maxHeight: "90%", overflowY: "auto", display: "flex", alignItems: "center", padding: "0 12px" }}>
+                  {question}
+                </div>
+              </div>
+            </div>
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-all duration-300 rounded-full"></div>
           </>
         ) : (
@@ -79,17 +85,17 @@ const CirclePrompt = ({ selectedVibe }: CirclePromptProps) => {
         </div>
       )}
 
-      <div className="flex gap-4">
+      <div className="flex flex-wrap sm:flex-nowrap justify-center gap-4">
         <button
-          className="px-6 py-3 rounded-lg bg-primary text-white font-medium shadow-md hover:shadow-lg hover:bg-primary/90 transition-all flex items-center disabled:opacity-60 disabled:cursor-not-allowed"
+          className="px-5 py-2 sm:px-6 sm:py-3 rounded-lg bg-primary text-white font-medium shadow-md hover:shadow-lg hover:bg-primary/90 transition-all flex items-center disabled:opacity-60 disabled:cursor-not-allowed"
           onClick={handleGenerate}
           disabled={isPending}
         >
           <i className={`${isPending ? "ri-loader-4-line animate-spin" : "ri-refresh-line"} mr-2 text-lg`}></i> 
-          {isPending ? "Generating..." : "New Question"}
+          <span className="text-sm sm:text-base">{isPending ? "Generating..." : "New Question"}</span>
         </button>
         <button
-          className={`px-6 py-3 rounded-lg font-medium shadow-md hover:shadow-lg transition-all flex items-center ${
+          className={`px-5 py-2 sm:px-6 sm:py-3 rounded-lg font-medium shadow-md hover:shadow-lg transition-all flex items-center ${
             copied 
               ? "bg-green-500 text-white" 
               : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600"
@@ -97,7 +103,7 @@ const CirclePrompt = ({ selectedVibe }: CirclePromptProps) => {
           onClick={handleCopy}
         >
           <i className={`${copied ? "ri-check-line" : "ri-clipboard-line"} mr-2 text-lg`}></i>
-          {copied ? "Copied!" : "Copy"}
+          <span className="text-sm sm:text-base">{copied ? "Copied!" : "Copy"}</span>
         </button>
       </div>
       
