@@ -41,17 +41,27 @@ export default function WelcomeDialog({ open, onOpenChange, showFeedback = false
       return (
         <>
           <DialogHeader>
-            <DialogTitle className="text-xl">Share Your Feedback</DialogTitle>
-            <DialogDescription>
-              Help us improve kAIros with your thoughts and suggestions
+            <div className="flex items-center mb-2">
+              <i className="ri-feedback-line text-primary text-2xl mr-2"></i>
+              <DialogTitle className="text-xl">Share Your Feedback</DialogTitle>
+            </div>
+            <DialogDescription className="text-gray-700 dark:text-gray-200">
+              Help us improve kAIros with your valuable insights
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              Your feedback is invaluable in helping us improve kAIros. Please share your thoughts, 
-              suggestions, or any issues you've encountered:
-            </p>
+            <div className="space-y-2">
+              <p className="text-sm text-gray-700 dark:text-gray-200">
+                Help us make kAIros better! We want to hear from you about:
+              </p>
+              <ul className="list-disc list-inside text-sm text-gray-600 dark:text-gray-200 pl-2">
+                <li>Features you'd like to see added or improved</li>
+                <li>Any bugs or issues you've encountered</li>
+                <li>User experience suggestions (UI, workflow, etc.)</li>
+                <li>Content quality and relevance to your Scrum practices</li>
+              </ul>
+            </div>
             <Textarea 
               value={feedback}
               onChange={(e) => setFeedback(e.target.value)}
@@ -95,7 +105,7 @@ export default function WelcomeDialog({ open, onOpenChange, showFeedback = false
           <div className="space-y-4">
             <div className="p-4 bg-primary/5 rounded-md border border-primary/20">
               <h3 className="font-medium text-primary mb-2">What is kAIros?</h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-gray-600 dark:text-gray-200">
                 kAIros is an AI companion for Scrum Masters and Agile Coaches. Named after the Greek concept of "the opportune moment," 
                 it helps you guide teams through Sprint events with thoughtful prompts, scenarios, and insights exactly when needed.
               </p>
@@ -103,10 +113,10 @@ export default function WelcomeDialog({ open, onOpenChange, showFeedback = false
 
             <div className="space-y-2">
               <h3 className="font-medium">Key Features:</h3>
-              <ul className="list-disc list-inside text-sm space-y-1 text-gray-500 dark:text-gray-400">
-                <li><span className="font-medium text-gray-700 dark:text-gray-300">Team Engagement Tools</span> - Icebreakers and team activities to foster collaboration</li>
-                <li><span className="font-medium text-gray-700 dark:text-gray-300">Scrum Event Simulator</span> - Practice facilitation across all Sprint events</li>
-                <li><span className="font-medium text-gray-700 dark:text-gray-300">AI Coaching</span> - Receive guidance based on Scrum Guide 2020 principles</li>
+              <ul className="list-disc list-inside text-sm space-y-1 text-gray-600 dark:text-gray-200">
+                <li><span className="font-medium text-gray-800 dark:text-white">Team Engagement Tools</span> - Icebreakers and team activities to foster collaboration</li>
+                <li><span className="font-medium text-gray-800 dark:text-white">Scrum Event Simulator</span> - Practice facilitation across all Sprint events</li>
+                <li><span className="font-medium text-gray-800 dark:text-white">AI Coaching</span> - Receive guidance based on Scrum Guide 2020 principles</li>
               </ul>
             </div>
 

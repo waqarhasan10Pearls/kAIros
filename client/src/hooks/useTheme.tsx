@@ -1,4 +1,4 @@
-import { useState, createContext, useContext } from "react";
+import { useState, createContext, useContext, useEffect } from "react";
 
 interface ThemeContextType {
   isDarkMode: boolean;
@@ -14,16 +14,33 @@ const defaultThemeContext: ThemeContextType = {
 const ThemeContext = createContext<ThemeContextType>(defaultThemeContext);
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  // Initialize dark mode from localStorage or system preference
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    // Check localStorage first
+    const savedTheme = localStorage.getItem('kairosTheme');
+    if (savedTheme) {
+      return savedTheme === 'dark';
+    }
+    // If no saved preference, check system preference
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  });
 
-  const toggleTheme = () => {
-    setIsDarkMode(prev => !prev);
-    // Apply dark mode class to document
-    if (!isDarkMode) {
+  // Apply theme class on initial render and when theme changes
+  useEffect(() => {
+    if (isDarkMode) {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
     }
+  }, [isDarkMode]);
+
+  const toggleTheme = () => {
+    setIsDarkMode(prev => {
+      const newTheme = !prev;
+      // Save to localStorage
+      localStorage.setItem('kairosTheme', newTheme ? 'dark' : 'light');
+      return newTheme;
+    });
   };
 
   return (
