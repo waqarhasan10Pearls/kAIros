@@ -84,6 +84,9 @@ IMPORTANT COACHING GUIDELINES:
 4. Avoid answering with a generic format or numbered steps unless specifically asked
 5. Keep responses focused, practical, and actionable
 6. Remember you are coaching a Scrum Master, not team members
+7. Use perfect grammar and punctuation in all responses
+8. Ensure proper capitalization and sentence structure
+9. Proofread your responses to prevent grammatical errors
 
 ${enhancedKnowledge}
 
@@ -187,7 +190,12 @@ ${scrumValues.description}
 
 Generate a single, thought-provoking icebreaker question for a Scrum team with the following vibe: ${vibe}.
 The question should be concise (1-2 sentences), open-ended, and encourage reflection or discussion related to team dynamics, collaboration, or Agile principles.
-Do not include any explanations, just return the question directly.`;
+
+IMPORTANT REQUIREMENTS:
+1. Use perfect grammar and punctuation
+2. Do not include any explanations or comments
+3. Return only the question text, nothing else
+4. Proofread to ensure there are no grammatical or spelling errors`;
 
   try {
     const result = await makeAIRequest(
@@ -233,7 +241,12 @@ Return your response as a JSON object with these keys:
 - description: A brief 1-2 sentence description of the activity and its purpose
 - instructions: An array of strings, each string being a single step in the activity instructions (keep each step concise)
 
-Make sure the instructions are clear, actionable, and can be completed within the stated duration.`;
+IMPORTANT REQUIREMENTS:
+1. Use perfect grammar and punctuation in all fields
+2. Ensure proper capitalization and punctuation in all instructions
+3. Make sure the instructions are clear, actionable, and can be completed within the stated duration
+4. Proofread all content to ensure there are no grammatical or spelling errors
+5. Return valid JSON format that can be parsed`;
 
   try {
     const result = await makeAIRequest(

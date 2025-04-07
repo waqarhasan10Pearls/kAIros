@@ -58,7 +58,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           duration: "10-15 minutes",
           description: "Help the team connect their work to Scrum values and build a stronger team culture.",
           instructions: [
-            "Write each Scrum value on a different sticky note: Commitment, Focus, Openness, Respect, Courage.", 
+            "Write each Scrum value on a different sticky note: Commitment, Focus, Openness, Respect, and Courage.", 
             "Ask everyone to silently reflect on a recent example where they saw a team member demonstrate each value.", 
             "Have team members share one example, connecting it to a specific value.",
             "Discuss which values feel strongest and which might need more attention in your team."
@@ -97,7 +97,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!OPENROUTER_API_KEY) {
         console.log("No OpenRouter API key available, returning fallback response");
         return res.json({
-          question: "What's one way your team demonstrated a Scrum value in the last Sprint?"
+          question: "How has your team demonstrated one of the Scrum values during the past Sprint?"
         });
       }
       
@@ -244,17 +244,17 @@ Additional requirements:
       // If there's no API key, return a fallback response
       if (!OPENROUTER_API_KEY) {
         console.log("No OpenRouter API key available, returning fallback response");
-        // Create a generic AI Coach response based on the event type
+        // Create a generic AI Coach response based on the event type with perfect grammar
         let aiResponse = '';
         switch(eventType) {
           case "daily":
-            aiResponse = "As the Scrum Master, you might want to consider how the team is progressing toward the Sprint Goal. A powerful question you could ask might be: \"What impediments are preventing us from achieving our Sprint Goal?\" Remember, the Daily Scrum is for the Developers to inspect progress and adapt their plan.";
+            aiResponse = "As the Scrum Master, you might want to consider how the team is progressing toward the Sprint Goal. A powerful question you could ask is: \"What impediments are preventing us from achieving our Sprint Goal?\" Remember, the Daily Scrum is for the Developers to inspect progress and adapt their plan.";
             break;
           case "planning":
-            aiResponse = "In your role as Scrum Master, you're facilitating this Planning session. Have you considered asking the team how confident they feel about the Definition of Done for these items? The Product Owner seems concerned about the scope - how might you help balance ambition with realism?";
+            aiResponse = "In your role as Scrum Master, you're facilitating this Planning session. Have you considered asking the team how confident they feel about the Definition of Done for these items? The Product Owner seems concerned about the scope. How might you help balance ambition with realism?";
             break;
           case "review":
-            aiResponse = "As you facilitate this Sprint Review, consider how you might help the team gather meaningful feedback from stakeholders. What questions could you ask to ensure the team understands how their work impacts the product's value? Remember the Review is an opportunity for inspection and adaptation of the Product.";
+            aiResponse = "As you facilitate this Sprint Review, consider how you might help the team gather meaningful feedback from stakeholders. What questions could you ask to ensure the team understands how their work impacts the product's value? Remember, the Review is an opportunity for inspection and adaptation of the Product.";
             break;
           case "retro":
             aiResponse = "In facilitating this Retrospective, you might want to focus on creating a safe space for the team to reflect honestly. Consider asking: \"What one change could make us more effective as a team?\" Remember that the Retrospective is about identifying improvements, not just listing problems.";
