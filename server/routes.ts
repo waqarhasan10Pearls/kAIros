@@ -5,6 +5,7 @@ import { z } from "zod";
 import { SimulationInfo, Message } from "../shared/schema";
 import { TeamMember, SprintDetails, ScenarioType } from "../client/src/lib/types";
 import { scrumEvents, scrumTeam, scrumValues } from "./scrum-knowledge";
+import { AI } from "./services/ai";
 
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY || "";
 console.log("OpenRouter API Key available:", !!OPENROUTER_API_KEY);
@@ -65,96 +66,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
-          "HTTP-Referer": "https://kairos-coach.com"
-        },
-        body: JSON.stringify({
-          model: "anthropic/claude-3-haiku",
-          messages: [
-            {
-              role: "system",
-              content: `You are an expert Scrum Master assistant that generates engaging icebreaker activities that promote Agile principles and Scrum values.
-
-Scrum Values to embody:
-${scrumValues.values.map(value => `- ${value}: ${value}`).join('\n')}
-
-${scrumValues.description}
-
-Scrum Team Structure:
-${scrumTeam.composition}
-${scrumTeam.characteristics.map(char => `- ${char}`).join('\n')}
-`
-            },
-            {
-              role: "user",
-              content: `Generate a ${vibe} icebreaker activity for a Scrum Team meeting. 
-
-The activity should:
-- Take 5-15 minutes to complete
-- Be easy to facilitate with minimal preparation
-- Foster team collaboration and communication
-- Relate to Scrum values or agile principles when possible
-- ${
-  vibe === "funny" ? "Be lighthearted and humorous" : 
-  vibe === "deep" ? "Encourage meaningful reflection" : 
-  vibe === "creative" ? "Involve creative thinking or problem-solving" : 
-  vibe === "teambuilding" ? "Focus on strengthening team relationships" : 
-  vibe === "technical" ? "Incorporate technical concepts in an engaging way" : 
-  vibe === "reflection" ? "Promote thoughtful team or individual reflection" : 
-  vibe === "energizer" ? "Boost team energy and engagement" : 
-  "Be engaging and inclusive"
-}
-
-Format your response as a JSON object with these fields:
-{
-  "title": "Activity name (concise and engaging)",
-  "duration": "Estimated time (e.g., '5-10 minutes')",
-  "description": "1-2 sentence summary of the activity and its purpose",
-  "instructions": ["Step 1...", "Step 2...", "Step 3..."] (clear, numbered instructions for the facilitator)
-}
-
-Make sure the instructions are specific, actionable, and easy to follow.`
-            }
-          ],
-          max_tokens: 500
-        })
+      // Use the new AI service with enhanced knowledge for generating activities
+      const activity = await AI.generateTeamActivity(vibe, {
+        preferredModel: "anthropic/claude-3-haiku",
+        temperature: 0.7,
+        maxTokens: 600
       });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Failed to generate icebreaker activity");
-      }
-
-      const data = await response.json();
-      let activity;
-      try {
-        const content = data.choices[0]?.message?.content?.trim() || '';
-        // Extract JSON from the content
-        const jsonMatch = content.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-          activity = JSON.parse(jsonMatch[0]);
-        } else {
-          throw new Error("Could not parse JSON from response");
-        }
-      } catch (parseError) {
-        console.error("Error parsing activity JSON:", parseError);
-        // Fallback activity
-        activity = {
-          title: "Agile Values Quick Share",
-          duration: "5-10 minutes",
-          description: "A quick activity to connect team members through shared experiences related to agile values.",
-          instructions: [
-            "Ask each team member to think of a recent moment when they saw an Agile or Scrum value in action.",
-            "Give everyone 1 minute to reflect silently.",
-            "Go around the team and have each person share their example in 30 seconds or less.",
-            "Acknowledge each contribution and highlight connections between examples."
-          ]
-        };
-      }
 
       return res.json(activity);
     } catch (error) {
@@ -184,64 +101,13 @@ Make sure the instructions are specific, actionable, and easy to follow.`
         });
       }
       
-      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
-          "HTTP-Referer": "https://kairos-coach.com"
-        },
-        body: JSON.stringify({
-          model: "gryphe/mythomax-l2-13b",
-          messages: [
-            {
-              role: "system",
-              content: `You are an expert Scrum Master assistant that generates engaging icebreaker questions that promote Agile principles and Scrum values.
-
-Scrum Values to embody:
-${scrumValues.values.map(value => `- ${value}: ${value}`).join('\n')}
-
-${scrumValues.description}
-
-Scrum Team Structure:
-${scrumTeam.composition}
-${scrumTeam.characteristics.map(char => `- ${char}`).join('\n')}
-`
-            },
-            {
-              role: "user",
-              content: `Generate a ${vibe} icebreaker question for a Scrum Team meeting. The question should be:
-- Thought-provoking and concise (max 25 words)
-- Designed to foster transparency, inspection, and adaptation
-- Supportive of building cross-functional collaboration and self-management
-- Aligned with Scrum values (commitment, courage, focus, openness, respect)
-- ${
-  vibe === "funny" ? "Lighthearted and humorous" : 
-  vibe === "deep" ? "Reflective and meaningful" : 
-  vibe === "creative" ? "Imaginative and innovative" : 
-  vibe === "teambuilding" ? "Focused on team cohesion and collaboration" : 
-  vibe === "technical" ? "Related to development practices and technical excellence" : 
-  vibe === "reflection" ? "Encouraging thoughtful reflection on processes and practices" : 
-  vibe === "energizer" ? "Energizing and momentum-building" : 
-  "Balanced and engaging"
-}
-
-Reply with ONLY the question text.`
-            }
-          ],
-          max_tokens: 150
-        })
+      // Use the new AI service with enhanced knowledge
+      const result = await AI.generateIcebreakerQuestion(vibe, {
+        preferredModel: "anthropic/claude-3-haiku",
+        temperature: 0.8
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Failed to generate icebreaker question");
-      }
-
-      const data = await response.json();
-      const question = data.choices[0]?.message?.content?.trim() || "What's something unexpected you learned recently that changed your perspective?";
-
-      return res.json({ question });
+      return res.json(result);
     } catch (error) {
       console.error("Error generating icebreaker:", error);
       // Provide more detailed error logging
@@ -407,31 +273,40 @@ Additional requirements:
         return res.json({ success: true, message: aiMessage });
       }
 
-      const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
-          "HTTP-Referer": "https://kairos-coach.com"
-        },
-        body: JSON.stringify({
-          model: "anthropic/claude-3-haiku",
-          messages: [
-            { role: "system", content: systemMessage },
-            ...messageHistory,
-            { role: "user", content }
-          ],
-          max_tokens: 800
-        })
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.message || "Failed to generate AI response");
-      }
-
-      const data = await response.json();
-      const aiResponse = data.choices[0]?.message?.content?.trim();
+      // Use the enhanced AI service for generating simulator responses
+      // We already have simulationInfo from earlier, no need to fetch it again
+      
+      // Cast the simulation info to an appropriate type for TypeScript
+      const typedSimInfo = simulationInfo as {
+        scenarioChallenge?: { id?: string },
+        customScenario?: string | null
+      };
+      
+      // Check if we have a scenario challenge in the simulation info
+      const scenarioId = typedSimInfo.scenarioChallenge?.id;
+      const customScenario = typedSimInfo.customScenario || undefined;
+      
+      // Convert message history to the right format
+      const formattedMessages = messageHistory.map(msg => ({
+        role: msg.role,
+        content: msg.content
+      }));
+      
+      // Add the current user message
+      formattedMessages.push({ role: "user", content });
+      
+      // Get AI response with enhanced knowledge
+      const aiResponse = await AI.generateAIResponse(
+        eventType,
+        formattedMessages,
+        scenarioId,
+        customScenario,
+        {
+          preferredModel: "anthropic/claude-3-haiku",
+          temperature: 0.7,
+          maxTokens: 800
+        }
+      );
       
       // Add AI response
       const aiMessage = await storage.addMessage({
