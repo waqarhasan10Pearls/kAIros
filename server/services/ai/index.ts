@@ -29,8 +29,8 @@ interface AIServiceConfig {
 
 // Default configuration
 const defaultConfig: AIServiceConfig = {
-  provider: "openrouter", // Default to OpenRouter since we know it's available
-  preferredModel: "anthropic/claude-3-haiku", // Reasonable default model
+  provider: "openai", // Use OpenAI now that we have the API key
+  preferredModel: "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024
   enhancedKnowledge: true, // Use enhanced knowledge by default
   temperature: 0.7,
   maxTokens: 800
@@ -254,9 +254,18 @@ IMPORTANT REQUIREMENTS:
       mergedConfig
     );
 
-    // Parse JSON response
+    // Parse JSON response - handle markdown formatting if present
     try {
-      const parsedResult = JSON.parse(result);
+      let cleanResult = result.trim();
+      
+      // Remove markdown code blocks if present
+      if (cleanResult.startsWith('```json')) {
+        cleanResult = cleanResult.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+      } else if (cleanResult.startsWith('```')) {
+        cleanResult = cleanResult.replace(/^```\s*/, '').replace(/\s*```$/, '');
+      }
+      
+      const parsedResult = JSON.parse(cleanResult);
       return {
         title: parsedResult.title,
         duration: parsedResult.duration,
@@ -322,6 +331,8 @@ async function makeAIRequest(
   messages: Array<{ role: string; content: string }>, 
   config: AIServiceConfig
 ): Promise<string> {
+  console.log(`Using AI provider: ${config.provider} with model: ${config.preferredModel}`);
+  
   // Check if we have API keys
   if (config.provider === "openrouter" && !OPENROUTER_API_KEY) {
     throw new Error("OpenRouter API key is missing");
@@ -384,14 +395,35 @@ async function makeOpenRouterRequest(
 }
 
 /**
- * Make a request to the OpenAI API (stub for future implementation)
+ * Make a request to the OpenAI API
  */
 async function makeOpenAIRequest(
   messages: Array<{ role: string; content: string }>,
   config: AIServiceConfig
 ): Promise<string> {
-  // This would be implemented if we had the OpenAI API key
-  throw new Error("OpenAI API implementation not available - missing API key");
+  const { default: OpenAI } = await import('openai');
+  
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error("OpenAI API key is not configured");
+  }
+
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: config.preferredModel || "gpt-4o", // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+      messages: messages as any,
+      temperature: config.temperature || 0.7,
+      max_tokens: config.maxTokens || 1000,
+    });
+
+    return response.choices[0]?.message?.content || "No response generated";
+  } catch (error: any) {
+    console.error("OpenAI API error:", error.message);
+    throw new Error(`OpenAI API request failed: ${error.message}`);
+  }
 }
 
 /**

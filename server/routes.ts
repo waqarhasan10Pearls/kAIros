@@ -68,7 +68,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Use the new AI service with enhanced knowledge for generating activities
       const activity = await AI.generateTeamActivity(vibe, {
-        preferredModel: "anthropic/claude-3-haiku",
         temperature: 0.7,
         maxTokens: 600
       });
@@ -103,7 +102,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Use the new AI service with enhanced knowledge
       const result = await AI.generateIcebreakerQuestion(vibe, {
-        preferredModel: "anthropic/claude-3-haiku",
         temperature: 0.8
       });
 
@@ -302,7 +300,6 @@ Additional requirements:
         scenarioId,
         customScenario,
         {
-          preferredModel: "anthropic/claude-3-haiku",
           temperature: 0.7,
           maxTokens: 800
         }
